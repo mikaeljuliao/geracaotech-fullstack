@@ -1,9 +1,10 @@
 const sequelize = require("./database");
 require("../models/User");
+require("../models/category");
 
 async function syncDatabase() {
   try {
-    await sequelize.sync();
+    await sequelize.sync({ force: true });
     console.log("Database tables synchronized.");
   } catch (error) {
     console.error("Could not synchronize database tables:", error);
