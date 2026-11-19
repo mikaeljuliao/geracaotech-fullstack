@@ -4,6 +4,7 @@ require("../models/category");
 require("../models/Product");
 require("../models/ProductImage");
 require("../models/ProductOption");
+require("../models/ProductCategory");
 
 async function syncDatabase() {
   try {
