@@ -5,7 +5,7 @@ function authenticateToken(req, res, next) {
   const match = authorization.match(/^Bearer\s+(.+)$/i);
 
   if (!match) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(400).json({ message: "Invalid or missing token" });
   }
 
   const secret = process.env.JWT_SECRET;
@@ -17,7 +17,7 @@ function authenticateToken(req, res, next) {
     jwt.verify(match[1], secret);
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(400).json({ message: "Invalid or missing token" });
     }
 
     return next(error);

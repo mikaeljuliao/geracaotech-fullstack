@@ -3,6 +3,7 @@ process.env.DB_USER = "test_user";
 process.env.JWT_SECRET = "test-secret";
 
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const app = require("../src/app");
 const User = require("../src/models/User");
 
@@ -86,13 +87,57 @@ describe("POST /v1/user", () => {
     });
   });
 
+  describe("POST /v1/user/token", () => {
+    test("returns a JWT for valid credentials", async () => {
+      jest.spyOn(User, "findOne").mockResolvedValue({
+        id: 7,
+        password: "hashed-password",
+      });
+      jest.spyOn(bcrypt, "compare").mockResolvedValue(true);
+
+      const response = await fetch(`${baseUrl}/v1/user/token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: "user@mail.com", password: "123@123" }),
+      });
+
+      expect(response.status).toBe(200);
+      const { token } = await response.json();
+      expect(jwt.verify(token, process.env.JWT_SECRET).sub).toBe("7");
+      expect(bcrypt.compare).toHaveBeenCalledWith(
+        "123@123",
+        "hashed-password",
+      );
+    });
+
+    test.each([
+      {},
+      { email: "user@mail.com" },
+      { email: "user@mail.com", password: "wrong-password" },
+    ])("returns 400 for invalid credentials", async (body) => {
+      jest.spyOn(User, "findOne").mockResolvedValue({
+        id: 7,
+        password: "hashed-password",
+      });
+      jest.spyOn(bcrypt, "compare").mockResolvedValue(false);
+
+      const response = await fetch(`${baseUrl}/v1/user/token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      expect(response.status).toBe(400);
+    });
+  });
+
   describe("PUT /v1/user/:id", () => {
     const createToken = () => jwt.sign({ sub: "test-user" }, process.env.JWT_SECRET);
 
     test.each([
       ["missing", undefined],
       ["invalid", "Bearer invalid-token"],
-    ])("returns 401 for a %s token", async (_case, authorization) => {
+    ])("returns 400 for a %s token", async (_case, authorization) => {
       const findByPkSpy = jest.spyOn(User, "findByPk");
       const headers = { "Content-Type": "application/json" };
       if (authorization) headers.Authorization = authorization;
@@ -107,7 +152,7 @@ describe("POST /v1/user", () => {
         }),
       });
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(400);
       expect(findByPkSpy).not.toHaveBeenCalled();
     });
 
@@ -144,7 +189,7 @@ describe("POST /v1/user", () => {
       test.each([
         ["missing", undefined],
         ["invalid", "Bearer invalid-token"],
-      ])("returns 401 for a %s token", async (_case, authorization) => {
+      ])("returns 400 for a %s token", async (_case, authorization) => {
         const findByPkSpy = jest.spyOn(User, "findByPk");
         const headers = {};
         if (authorization) headers.Authorization = authorization;
@@ -154,7 +199,7 @@ describe("POST /v1/user", () => {
           headers,
         });
 
-        expect(response.status).toBe(401);
+        expect(response.status).toBe(400);
         expect(findByPkSpy).not.toHaveBeenCalled();
       });
 

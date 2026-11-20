@@ -221,7 +221,7 @@ describe("POST /v1/product", () => {
   test.each([
     ["missing", undefined],
     ["invalid", "Bearer invalid-token"],
-  ])("returns 401 for a %s token", async (_case, authorization) => {
+  ])("returns 400 for a %s token", async (_case, authorization) => {
     const createSpy = jest.spyOn(Product, "create");
     const headers = { "Content-Type": "application/json" };
     if (authorization) headers.Authorization = authorization;
@@ -232,7 +232,7 @@ describe("POST /v1/product", () => {
       body: JSON.stringify(validProduct),
     });
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(400);
     expect(createSpy).not.toHaveBeenCalled();
   });
 
@@ -349,7 +349,7 @@ describe("PUT /v1/product/:id", () => {
   };
 
   test.each([undefined, "Bearer invalid-token"])(
-    "returns 401 without a valid token",
+    "returns 400 without a valid token",
     async (token) => {
       const findSpy = jest.spyOn(Product, "findByPk");
       const headers = { "Content-Type": "application/json" };
@@ -361,7 +361,7 @@ describe("PUT /v1/product/:id", () => {
         body: JSON.stringify(updatedProduct),
       });
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(400);
       expect(findSpy).not.toHaveBeenCalled();
     },
   );
@@ -498,7 +498,7 @@ describe("DELETE /v1/product/:id", () => {
     `Bearer ${jwt.sign({ sub: "test-user" }, process.env.JWT_SECRET)}`;
 
   test.each([undefined, "Bearer invalid-token"])(
-    "returns 401 without a valid token",
+    "returns 400 without a valid token",
     async (token) => {
       const findSpy = jest.spyOn(Product, "findByPk");
       const headers = {};
@@ -509,7 +509,7 @@ describe("DELETE /v1/product/:id", () => {
         headers,
       });
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(400);
       expect(findSpy).not.toHaveBeenCalled();
     },
   );

@@ -137,7 +137,7 @@ describe("GET /v1/category/:id", () => {
     test.each([
       ["missing", undefined],
       ["invalid", "Bearer invalid-token"],
-    ])("returns 401 for a %s token", async (_case, authorization) => {
+    ])("returns 400 for a %s token", async (_case, authorization) => {
       const createSpy = jest.spyOn(Category, "create");
       const headers = { "Content-Type": "application/json" };
       if (authorization) headers.Authorization = authorization;
@@ -148,7 +148,7 @@ describe("GET /v1/category/:id", () => {
         body: JSON.stringify({ name: "Shoes", slug: "shoes" }),
       });
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(400);
       expect(createSpy).not.toHaveBeenCalled();
     });
 
@@ -236,7 +236,7 @@ describe("PUT /v1/category/:id", () => {
   test.each([
     ["missing", undefined],
     ["invalid", "Bearer invalid-token"],
-  ])("returns 401 for a %s token", async (_case, authorization) => {
+  ])("returns 400 for a %s token", async (_case, authorization) => {
     const findSpy = jest.spyOn(Category, "findByPk");
     const headers = { "Content-Type": "application/json" };
     if (authorization) headers.Authorization = authorization;
@@ -251,7 +251,7 @@ describe("PUT /v1/category/:id", () => {
       }),
     });
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(400);
     expect(findSpy).not.toHaveBeenCalled();
   });
 
@@ -289,7 +289,7 @@ describe("PUT /v1/category/:id", () => {
     test.each([
       ["missing", undefined],
       ["invalid", "Bearer invalid-token"],
-    ])("returns 401 for a %s token", async (_case, authorization) => {
+    ])("returns 400 for a %s token", async (_case, authorization) => {
       const findSpy = jest.spyOn(Category, "findByPk");
       const headers = {};
       if (authorization) headers.Authorization = authorization;
@@ -299,7 +299,7 @@ describe("PUT /v1/category/:id", () => {
         headers,
       });
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(400);
       expect(findSpy).not.toHaveBeenCalled();
     });
 
