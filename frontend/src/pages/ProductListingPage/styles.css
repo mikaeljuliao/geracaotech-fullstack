@@ -317,10 +317,6 @@
     gap: 48px 10px;
   }
 
-  .product-listing-page__results .product-card:nth-child(n + 9) {
-    display: none;
-  }
-
   .product-listing-page__results .product-card__details {
     padding-top: 12px;
   }

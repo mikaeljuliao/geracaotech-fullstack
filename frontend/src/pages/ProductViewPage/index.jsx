@@ -1,78 +1,126 @@
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import BuyBox from '../../components/BuyBox';
 import Gallery from '../../components/Gallery';
 import ProductListing from '../../components/ProductListing';
 import ProductOptions from '../../components/ProductOptions';
 import Section from '../../components/Section';
+import { getCategories, getProduct, getProducts, toProductCard } from '../../services/storeApi';
 import Layout from '../Layout';
-import products from '../../data/products';
 import './styles.css';
 
+const productFields = 'id,enabled,name,price,price_with_discount,category_ids,images';
 const galleryBackgrounds = ['#E4E4FE', '#FFE9C7', '#FFC2C4', '#E3D0A7', '#E9E0D3'];
-const sneakerImage = '/nike-revolution-6-next-nature.png';
-const productDetailOverrides = {
-  '1': {
-    name: 'Tênis Nike Revolution 6 Next Nature Masculino',
-    brand: 'Nike',
-    category: 'Tênis',
-    subcategory: 'Casual',
-    reference: '38416711',
-    price: 249.9,
-    priceDiscount: 219,
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.',
-    image: sneakerImage,
-  },
-};
-
-const relatedProducts = Array.from({ length: 4 }, (_, index) => ({
-  id: `related-sneaker-${index + 1}`,
-  productPageId: `${index + 2}`,
-  name: 'K-Swiss V8 - Masculino',
-  image: '/featured-k-swiss.png',
-  price: 200,
-  ...(index < 2 ? { priceDiscount: 100 } : {}),
-  brand: 'K-Swiss',
-  category: 'Tênis',
-}));
-
-const sizes = ['39', '40', '41', '42', '43'];
-const colors = ['#68DDF0', '#F95B63', '#5D5D5D', '#7379C2'];
 
 export default function ProductViewPage() {
   const { id } = useParams();
-  const product = products.find((item) => item.id === id);
-  const productDetails = product
-    ? { ...product, ...productDetailOverrides[id] }
-    : null;
-  const productImages = productDetails
-    ? galleryBackgrounds.map((background, index) => ({
-      src: productDetails.image,
-      alt: `${productDetails.name} - imagem ${index + 1}`,
-      background,
-    }))
-    : [];
-  const productReference = productDetails?.reference
-    || productDetails?.id.padStart(8, '0');
+  const [product, setProduct] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [relatedError, setRelatedError] = useState('');
+
+  useEffect(() => {
+    let active = true;
+
+    setLoading(true);
+    setError('');
+    setRelatedProducts([]);
+    Promise.all([getProduct(id), getCategories({ limit: -1 })])
+      .then(([productData, categoryResponse]) => {
+        if (active) {
+          setProduct(productData);
+          setCategories(categoryResponse.data);
+        }
+      })
+      .catch((requestError) => {
+        if (active) {
+          setProduct(null);
+          setError(requestError.status === 404
+            ? 'Produto não encontrado.'
+            : requestError.message);
+        }
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [id]);
+
+  useEffect(() => {
+    if (!product) return undefined;
+    let active = true;
+    const params = { limit: 5, fields: productFields };
+    if (product.category_ids.length) {
+      params.category_ids = String(product.category_ids[0]);
+    }
+
+    getProducts(params)
+      .then(({ data }) => {
+        if (active) {
+          setRelatedProducts(
+            data.filter((item) => item.id !== product.id && item.enabled)
+              .slice(0, 4)
+              .map((item) => toProductCard(item, categories)),
+          );
+        }
+      })
+      .catch((requestError) => {
+        if (active) setRelatedError(requestError.message);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [categories, product]);
+
+  const categoryNames = product?.category_ids
+    .map((categoryId) => categories.find((category) => category.id === categoryId)?.name)
+    .filter(Boolean) || [];
+  const categoryName = categoryNames.join(', ');
+  const images = product?.images.map((image, index) => ({
+    src: image.content,
+    alt: `${product.name} - imagem ${index + 1}`,
+    background: galleryBackgrounds[index % galleryBackgrounds.length],
+  })) || [];
 
   return (
-    <Layout defaultSearchTerm={productDetails?.category}>
-      {productDetails ? (
+    <Layout defaultSearchTerm={categoryName}>
+      {loading ? (
+        <div className="product-view-page__not-found" role="status">
+          Carregando produto...
+        </div>
+      ) : error ? (
+        <div className="product-view-page__not-found" role="alert">
+          <h1>{error}</h1>
+          <Link to="/produtos">Voltar aos produtos</Link>
+        </div>
+      ) : (
         <div className="product-view-page">
           <div className="product-view-page__inner">
             <nav className="product-view-page__breadcrumb" aria-label="Navegação estrutural">
               <ol>
                 <li><Link to="/">Home</Link></li>
                 <li><Link to="/produtos">Produtos</Link></li>
-                <li><Link to="/produtos?filter=tenis">Tênis</Link></li>
-                <li><span>{productDetails.brand}</span></li>
-                <li><span aria-current="page">{productDetails.name}</span></li>
+                {categoryNames.map((name, index) => (
+                  <li key={product.category_ids[index]}>
+                    <Link to={`/produtos?category_ids=${product.category_ids[index]}`}>
+                      {name}
+                    </Link>
+                  </li>
+                ))}
+                <li><span aria-current="page">{product.name}</span></li>
               </ol>
             </nav>
 
             <div className="product-view-page__details">
               <Gallery
                 className="product-view-page__gallery"
-                images={productImages}
+                images={images}
                 showThumbs
                 width="700px"
                 height="570px"
@@ -87,58 +135,51 @@ export default function ProductViewPage() {
                 )}
               />
               <BuyBox
-                name={productDetails.name}
-                category={productDetails.subcategory || productDetails.category}
-                brand={productDetails.brand}
-                reference={productReference}
-                stars="4.7"
-                rating="90"
-                price={productDetails.price}
-                priceDiscount={productDetails.priceDiscount}
-                description={productDetails.description
-                  || `O ${productDetails.name} combina conforto, qualidade e estilo para acompanhar você em todos os momentos.`}
+                name={product.name}
+                category={categoryName}
+                reference={String(product.id).padStart(8, '0')}
+                stock={product.stock}
+                price={Number(product.price)}
+                priceDiscount={
+                  Number(product.price_with_discount) > 0
+                    && Number(product.price_with_discount) < Number(product.price)
+                    ? Number(product.price_with_discount)
+                    : undefined
+                }
+                description={product.description}
               >
-                <div className="product-view-page__option-group">
-                  <h2>Tamanho</h2>
-                  <ProductOptions
-                    key={`sizes-${productDetails.id}`}
-                    options={sizes}
-                    shape="square"
-                    type="text"
-                    radius="4px"
-                    defaultOption="41"
-                  />
-                </div>
-                <div className="product-view-page__option-group">
-                  <h2>Cor</h2>
-                  <ProductOptions
-                    key={`colors-${productDetails.id}`}
-                    options={colors}
-                    shape="circle"
-                    type="color"
-                    defaultOption="#F95B63"
-                  />
-                </div>
+                {product.options.map((option) => (
+                  <div className="product-view-page__option-group" key={option.id}>
+                    <h2>{option.title}</h2>
+                    <ProductOptions
+                      options={option.values.split(',')}
+                      shape={option.shape}
+                      type={option.type}
+                      radius={`${option.radius || 0}px`}
+                    />
+                  </div>
+                ))}
               </BuyBox>
             </div>
 
-            <Section
-              title="Produtos Relacionados"
-              mobileTitle="Coleções em destaque"
-              titleAlign="left"
-              link={{ text: 'Ver todos  →', href: '/produtos?filter=tenis' }}
-            >
-              <ProductListing
-                products={id === '1'
-                  ? relatedProducts
-                  : products.filter((item) => item.id !== productDetails.id).slice(0, 4)}
-              />
-            </Section>
+            {relatedError ? (
+              <p role="alert">{relatedError}</p>
+            ) : relatedProducts.length > 0 ? (
+              <Section
+                title="Produtos Relacionados"
+                mobileTitle="Coleções em destaque"
+                titleAlign="left"
+                link={{
+                  text: 'Ver todos →',
+                  href: product.category_ids.length
+                    ? `/produtos?category_ids=${product.category_ids[0]}`
+                    : '/produtos',
+                }}
+              >
+                <ProductListing products={relatedProducts} />
+              </Section>
+            ) : null}
           </div>
-        </div>
-      ) : (
-        <div className="product-view-page__not-found">
-          <h1>Produto não encontrado</h1>
         </div>
       )}
     </Layout>

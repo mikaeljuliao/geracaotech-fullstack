@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import './styles.css';
 
-const currency = new Intl.NumberFormat('en-US', {
+const currency = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
-  currency: 'USD',
+  currency: 'BRL',
   maximumFractionDigits: 2,
   minimumFractionDigits: 0,
 });
@@ -18,6 +18,9 @@ export default function ProductCard({
   productPageId,
 }) {
   const imageSource = image || imagem;
+  const discountPercentage = price > 0 && priceDiscount !== undefined
+    ? Math.round((1 - priceDiscount / price) * 100)
+    : 0;
 
   return (
     <Link
@@ -28,7 +31,7 @@ export default function ProductCard({
       <article className="product-card">
         <div className="product-card__media">
           {priceDiscount !== undefined && (
-            <span className="product-card__discount">30% OFF</span>
+            <span className="product-card__discount">{discountPercentage}% OFF</span>
           )}
           <img className="product-card__image" src={imageSource} alt="" />
         </div>

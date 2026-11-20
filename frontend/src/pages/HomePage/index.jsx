@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Layout from '../Layout';
 import Section from '../../components/Section';
 import ProductListing from '../../components/ProductListing';
 import Gallery from '../../components/Gallery';
-import products from '../../data/products';
+import { getCategories, getProducts, toProductCard } from '../../services/storeApi';
 import sneakerIcon from '../../assets/category-sneaker.png';
 import shirtIcon from '../../assets/category-shirt.png';
 import pantsIcon from '../../assets/category-pants.png';
 import './styles.css';
+
+const productFields = 'id,enabled,name,price,price_with_discount,category_ids,images';
 
 const heroSlides = [
   { src: '/White-Sneakers-PNG-Clipart%201.png', alt: 'Tênis branco com detalhes vermelhos' },
@@ -30,23 +33,6 @@ const collections = [
   },
 ];
 
-const categories = [
-  { label: 'Camisetas', icon: 'shirt', filter: 'camisetas' },
-  { label: 'Calças', icon: 'pants', filter: 'calças' },
-  { label: 'Bonés', icon: 'pants', filter: 'boné' },
-  { label: 'Headphones', icon: 'headphones', filter: 'headphones' },
-  { label: 'Tênis', icon: 'sneaker', filter: 'tênis' },
-];
-
-const featuredProducts = products.map((product, index) => ({
-  ...product,
-  name: 'K-Swiss V8 - Masculino',
-  image: '/featured-k-swiss.png',
-  category: 'Tênis',
-  price: 200,
-  priceDiscount: index < 2 ? 100 : undefined,
-}));
-
 function CategoryIcon({ type }) {
   const imageIcons = {
     shirt: shirtIcon,
@@ -65,6 +51,12 @@ function CategoryIcon({ type }) {
   }
 
   const paths = {
+    category: (
+      <>
+        <path d="M4 5h16v14H4z" />
+        <path d="M8 9h8M8 13h5" />
+      </>
+    ),
     headphones: (
       <>
         <path d="M3 14v-3a9 9 0 0 1 18 0v3M5 13v-2a7 7 0 0 1 14 0v2" />
@@ -102,6 +94,60 @@ function renderHeroSlide(image) {
 }
 
 export default function HomePage() {
+  const [categories, setCategories] = useState([]);
+  const [apiProducts, setApiProducts] = useState([]);
+  const [productsLoading, setProductsLoading] = useState(true);
+  const [productsError, setProductsError] = useState('');
+  const [categoriesError, setCategoriesError] = useState('');
+
+  useEffect(() => {
+    let active = true;
+
+    getCategories({ limit: 5, use_in_menu: true })
+      .then(({ data }) => {
+        if (active) setCategories(data);
+      })
+      .catch((error) => {
+        if (active) setCategoriesError(error.message);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    getProducts({ limit: 8, fields: productFields })
+      .then(({ data }) => {
+        if (active) setApiProducts(data);
+      })
+      .catch((error) => {
+        if (active) setProductsError(error.message);
+      })
+      .finally(() => {
+        if (active) setProductsLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const featuredProducts = apiProducts
+    .filter((product) => product.enabled)
+    .slice(0, 4)
+    .map((product) => toProductCard(product, categories));
+
+  function getIcon(category) {
+    const name = category.name.toLocaleLowerCase('pt-BR');
+    if (name.includes('camis') || name.includes('shirt')) return 'shirt';
+    if (name.includes('calç') || name.includes('pants')) return 'pants';
+    if (name.includes('tênis') || name.includes('tenis')) return 'sneaker';
+    return 'category';
+  }
+
   return (
     <Layout>
       <div className="home-page">
@@ -135,20 +181,23 @@ export default function HomePage() {
             </div>
           </Section>
 
-          <Section title="Coleções em destaque" titleAlign="center">
+          <Section title="Categorias" titleAlign="center">
             <div className="home-page__categories">
               {categories.map((category) => (
                 <Link
                   className="home-page__category"
-                  key={category.label}
-                  to={`/produtos?filter=${encodeURIComponent(category.filter)}`}
+                  key={category.id}
+                  to={`/produtos?category_ids=${category.id}`}
                 >
                   <span className="home-page__category-icon">
-                    <CategoryIcon type={category.icon} />
+                    <CategoryIcon type={getIcon(category)} />
                   </span>
-                  <span>{category.label}</span>
+                  <span>{category.name}</span>
                 </Link>
               ))}
+              {categoriesError && (
+                <p role="alert">{categoriesError}</p>
+              )}
             </div>
           </Section>
 
@@ -156,7 +205,15 @@ export default function HomePage() {
             title="Produtos em alta"
             link={{ text: 'Ver todos →', href: '/produtos' }}
           >
-            <ProductListing products={featuredProducts} />
+            {productsLoading ? (
+              <p role="status">Carregando produtos...</p>
+            ) : productsError ? (
+              <p role="alert">{productsError}</p>
+            ) : featuredProducts.length ? (
+              <ProductListing products={featuredProducts} />
+            ) : (
+              <p>Nenhum produto disponível.</p>
+            )}
           </Section>
         </div>
 

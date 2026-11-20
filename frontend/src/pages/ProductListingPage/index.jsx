@@ -2,150 +2,91 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import FilterGroup from '../../components/FilterGroup';
 import ProductListing from '../../components/ProductListing';
+import { getCategories, getProducts, toProductCard } from '../../services/storeApi';
 import Layout from '../Layout';
-import products from '../../data/products';
 import './styles.css';
 
-const categoryOptions = [
-  { text: 'Esporte e lazer', value: 'Tênis' },
-  { text: 'Casual', value: 'Camisetas' },
-  { text: 'Utilitário', value: 'Acessórios' },
-  { text: 'Corrida', value: 'Corrida' },
-];
-
-const brandOptions = [
-  { text: 'Adidas' },
-  { text: 'Balenciaga' },
-  { text: 'K-Swiss' },
-  { text: 'Nike' },
-  { text: 'Puma' },
-];
-
-const genderOptions = [
-  { text: 'Masculino' },
-  { text: 'Feminino' },
-  { text: 'Unisex', value: 'Unissex' },
-];
-
-const statusOptions = [
-  { text: 'Novo' },
-  { text: 'Usado' },
-];
-
-const defaultSneakerFilters = {
-  brand: ['Adidas', 'K-Swiss'],
-  category: ['Tênis'],
-  gender: ['Masculino', 'Feminino'],
-  status: 'Novo',
-};
-
-const emptyFilters = {
-  brand: [],
-  category: [],
-  gender: [],
-  status: '',
-};
-
-const sneakerSearchResults = Array.from({ length: 15 }, (_, index) => ({
-  id: `sneaker-search-${index + 1}`,
-  productPageId: '1',
-  name: 'K-Swiss V8 - Masculino',
-  image: '/featured-k-swiss.png',
-  price: 200,
-  ...(index < 2 ? { priceDiscount: 100 } : {}),
-  brand: index % 2 === 0 ? 'K-Swiss' : 'Adidas',
-  category: 'Tênis',
-  gender: index % 2 === 0 ? 'Masculino' : 'Feminino',
-  status: 'Novo',
-}));
-
-function normalizeText(value) {
-  return value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLocaleLowerCase('pt-BR');
-}
-
-function createFilters(searchFilter) {
-  return searchFilter === 'tenis'
-    ? {
-      ...defaultSneakerFilters,
-      brand: [...defaultSneakerFilters.brand],
-      category: [...defaultSneakerFilters.category],
-      gender: [...defaultSneakerFilters.gender],
-    }
-    : { ...emptyFilters };
-}
-
-function hasDefaultSneakerFilters(filters) {
-  return filters.brand.join('|') === defaultSneakerFilters.brand.join('|')
-    && filters.category.join('|') === defaultSneakerFilters.category.join('|')
-    && filters.gender.join('|') === defaultSneakerFilters.gender.join('|')
-    && filters.status === defaultSneakerFilters.status;
-}
+const productFields = 'id,enabled,name,price,price_with_discount,category_ids,images';
 
 export default function ProductListingPage() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const searchTerm = (searchParams.get('filter') || '').trim();
-  const searchFilter = normalizeText(searchTerm);
+  const categoryIds = searchParams.get('category_ids') || '';
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
   const [sortOrder, setSortOrder] = useState('relevance');
-  const [filters, setFilters] = useState(() => createFilters(searchFilter));
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
-  const searchResults = searchFilter === 'tenis' ? sneakerSearchResults : products;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    setFilters(createFilters(searchFilter));
-    setFilterPanelOpen(false);
-  }, [searchFilter]);
+    let active = true;
 
-  const filteredProducts = useMemo(() => {
-    const result = searchResults.filter((product) => {
-      const searchableText = normalizeText(
-        `${product.name} ${product.category} ${product.brand}`,
-      );
-      const matchesSearch = !searchFilter || searchableText.includes(searchFilter);
-      const matchesCategory = filters.category.length === 0
-        || filters.category.includes(product.category);
-      const matchesBrand = filters.brand.length === 0
-        || filters.brand.includes(product.brand);
-      const matchesGender = filters.gender.length === 0
-        || filters.gender.includes(product.gender);
-      const matchesStatus = !filters.status
-        || (product.status || 'Novo') === filters.status;
+    getCategories({ limit: -1 })
+      .then(({ data }) => {
+        if (active) setCategories(data);
+      })
+      .catch((requestError) => {
+        if (active) setError(requestError.message);
+      });
 
-      return matchesSearch
-        && matchesCategory
-        && matchesBrand
-        && matchesGender
-        && matchesStatus;
-    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
-    if (sortOrder !== 'relevance') {
-      const priceOf = (product) => product.priceDiscount ?? product.price;
-      result.sort((first, second) => (
-        sortOrder === 'ascending'
-          ? priceOf(first) - priceOf(second)
-          : priceOf(second) - priceOf(first)
-      ));
-    }
+  useEffect(() => {
+    let active = true;
+    const params = { limit: -1, fields: productFields };
+    if (searchTerm) params.match = searchTerm;
+    if (categoryIds) params.category_ids = categoryIds;
 
-    return result;
-  }, [filters, searchFilter, searchResults, sortOrder]);
+    setLoading(true);
+    setError('');
+    getProducts(params)
+      .then(({ data }) => {
+        if (active) setProducts(data);
+      })
+      .catch((requestError) => {
+        if (active) setError(requestError.message);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
 
-  function updateCheckboxFilter(filterName, value, checked) {
-    setFilters((current) => ({
-      ...current,
-      [filterName]: checked
-        ? [...current[filterName], value]
-        : current[filterName].filter((selected) => selected !== value),
-    }));
+    return () => {
+      active = false;
+    };
+  }, [searchTerm, categoryIds]);
+
+  const visibleProducts = useMemo(() => {
+    const result = products
+      .filter((product) => product.enabled)
+      .map((product) => toProductCard(product, categories));
+
+    if (sortOrder === 'relevance') return result;
+    return result.sort((first, second) => (
+      sortOrder === 'ascending'
+        ? (first.priceDiscount ?? first.price) - (second.priceDiscount ?? second.price)
+        : (second.priceDiscount ?? second.price) - (first.priceDiscount ?? first.price)
+    ));
+  }, [categories, products, sortOrder]);
+
+  function updateCategory(categoryId, checked) {
+    const selected = categoryIds ? categoryIds.split(',') : [];
+    const next = checked
+      ? [...selected, categoryId]
+      : selected.filter((id) => id !== categoryId);
+    const nextParams = new URLSearchParams(searchParams);
+
+    if (next.length) nextParams.set('category_ids', next.join(','));
+    else nextParams.delete('category_ids');
+
+    setSearchParams(nextParams);
   }
 
-  const resultCount = searchFilter === 'tenis' && hasDefaultSneakerFilters(filters)
-    ? 389
-    : filteredProducts.length;
   const resultTitle = searchTerm
-    ? `Resultados para "${searchTerm[0].toLocaleUpperCase('pt-BR')}${searchTerm.slice(1)}"`
+    ? `Resultados para "${searchTerm}"`
     : 'Todos os produtos';
 
   return (
@@ -154,7 +95,7 @@ export default function ProductListingPage() {
         <div className="product-listing-page__inner">
           <div className="product-listing-page__toolbar">
             <p className="product-listing-page__summary">
-              <strong>{resultTitle}</strong> - {resultCount} produtos
+              <strong>{resultTitle}</strong> - {visibleProducts.length} produtos
             </p>
             <div className="product-listing-page__controls">
               <label className="product-listing-page__sort" htmlFor="product-sort">
@@ -212,43 +153,30 @@ export default function ProductListingPage() {
                   </button>
                 </div>
                 <FilterGroup
-                  title="Marca"
-                  name="brand"
-                  options={brandOptions}
-                  selectedValues={filters.brand}
-                  onChange={(value, checked) => updateCheckboxFilter('brand', value, checked)}
-                />
-                <FilterGroup
                   title="Categoria"
                   name="category"
-                  options={categoryOptions}
-                  selectedValues={filters.category}
-                  onChange={(value, checked) => updateCheckboxFilter('category', value, checked)}
-                />
-                <FilterGroup
-                  title="Gênero"
-                  name="gender"
-                  options={genderOptions}
-                  selectedValues={filters.gender}
-                  onChange={(value, checked) => updateCheckboxFilter('gender', value, checked)}
-                />
-                <FilterGroup
-                  title="Estado"
-                  inputType="radio"
-                  name="status"
-                  options={statusOptions}
-                  selectedValue={filters.status}
-                  onChange={(value) => setFilters((current) => ({ ...current, status: value }))}
+                  options={categories.map(({ id, name }) => ({
+                    text: name,
+                    value: String(id),
+                  }))}
+                  selectedValues={categoryIds ? categoryIds.split(',') : []}
+                  onChange={updateCategory}
                 />
               </div>
             </aside>
 
             <div className="product-listing-page__results">
-              {filteredProducts.length > 0 ? (
-                <ProductListing products={filteredProducts} />
+              {loading ? (
+                <p className="product-listing-page__empty" role="status">
+                  Carregando produtos...
+                </p>
+              ) : error ? (
+                <p className="product-listing-page__empty" role="alert">{error}</p>
+              ) : visibleProducts.length ? (
+                <ProductListing products={visibleProducts} />
               ) : (
                 <p className="product-listing-page__empty">
-                  Nenhum produto encontrado com esses filtros.
+                  Nenhum produto encontrado.
                 </p>
               )}
             </div>
