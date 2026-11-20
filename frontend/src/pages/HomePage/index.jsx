@@ -103,7 +103,7 @@ export default function HomePage() {
   useEffect(() => {
     let active = true;
 
-    getCategories({ limit: 5, use_in_menu: true })
+    getCategories({ limit: 5 })
       .then(({ data }) => {
         if (active) setCategories(data);
       })
@@ -137,7 +137,7 @@ export default function HomePage() {
 
   const featuredProducts = apiProducts
     .filter((product) => product.enabled)
-    .slice(0, 4)
+    .slice(0, 8)
     .map((product) => toProductCard(product, categories));
 
   function getIcon(category) {
@@ -162,7 +162,7 @@ export default function HomePage() {
         />
 
         <div className="home-page__body">
-          <Section title="Coleções em destaque">
+          <Section title="Coleções em destaque" titleAlign="center">
             <div className="home-page__collections">
               {collections.map(({ title, titleLines, src }) => (
                 <article className="home-page__collection" key={src}>
