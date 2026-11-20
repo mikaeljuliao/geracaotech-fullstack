@@ -1,5 +1,6 @@
 const express = require("express");
 const createUserController = require("../controllers/createUserController");
+const createUserTokenController = require("../controllers/createUserTokenController");
 const deleteUserController = require("../controllers/deleteUserController");
 const getUserByIdController = require("../controllers/getUserByIdController");
 const updateUserController = require("../controllers/updateUserController");
@@ -8,6 +9,7 @@ const authenticateToken = require("../middleware/authenticateToken");
 const router = express.Router();
 
 router.post("/", createUserController);
+router.post("/token", createUserTokenController);
 router.get("/:id", getUserByIdController);
 router.put("/:id", authenticateToken, updateUserController);
 router.delete("/:id", authenticateToken, deleteUserController);
