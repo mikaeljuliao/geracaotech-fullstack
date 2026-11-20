@@ -1,7 +1,7 @@
 const products = [
   {
     id: '1',
-    name: 'Tenis K-Swiss Court 2',
+    name: 'Tênis K-Swiss Court 2',
     image: '/product-thumb-1.jpeg',
     price: 200,
     priceDiscount: 149.9,
@@ -11,7 +11,7 @@ const products = [
   },
   {
     id: '2',
-    name: 'Tenis Nike Air Zoom',
+    name: 'Tênis Nike Air Zoom',
     image: '/product-thumb-2.jpeg',
     price: 349.9,
     priceDiscount: 299.9,
@@ -21,7 +21,7 @@ const products = [
   },
   {
     id: '3',
-    name: 'Tenis Adidas Superstar',
+    name: 'Tênis Adidas Superstar',
     image: '/product-thumb-3.jpeg',
     price: 279.9,
     brand: 'Adidas',
@@ -30,7 +30,7 @@ const products = [
   },
   {
     id: '4',
-    name: 'Tenis Puma Flyer Runner',
+    name: 'Tênis Puma Flyer Runner',
     image: '/product-thumb-4.jpeg',
     price: 239.9,
     priceDiscount: 199.9,
@@ -59,7 +59,7 @@ const products = [
   },
   {
     id: '7',
-    name: 'Bone Adidas Performance',
+    name: 'Boné Adidas Performance',
     image: '/product-thumb-2.jpeg',
     price: 99.9,
     brand: 'Adidas',

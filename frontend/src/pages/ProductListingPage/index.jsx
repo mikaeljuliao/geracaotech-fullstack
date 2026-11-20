@@ -27,6 +27,13 @@ const genderOptions = [
   { text: 'Unissex' },
 ];
 
+function normalizeText(value) {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('pt-BR');
+}
+
 export default function ProductListingPage() {
   const [searchParams] = useSearchParams();
   const [sortOrder, setSortOrder] = useState('');
@@ -35,12 +42,12 @@ export default function ProductListingPage() {
     brand: [],
     gender: '',
   });
-  const searchFilter = (searchParams.get('filter') || '').trim().toLocaleLowerCase('pt-BR');
+  const searchFilter = normalizeText((searchParams.get('filter') || '').trim());
 
   const filteredProducts = useMemo(() => {
     const result = products.filter((product) => {
       const matchesSearch = !searchFilter
-        || product.name.toLocaleLowerCase('pt-BR').includes(searchFilter);
+        || normalizeText(product.name).includes(searchFilter);
       const matchesCategory = filters.category.length === 0
         || filters.category.includes(product.category);
       const matchesBrand = filters.brand.length === 0
