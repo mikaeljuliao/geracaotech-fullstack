@@ -1,6 +1,8 @@
 process.env.DB_NAME = "test_db";
 process.env.DB_USER = "test_user";
+process.env.JWT_SECRET = "test-secret";
 
+const jwt = require("jsonwebtoken");
 const app = require("../src/app");
 const User = require("../src/models/User");
 
@@ -81,6 +83,94 @@ describe("POST /v1/user", () => {
       surname: "Hopper",
       email: "grace@example.com",
       password: "secret123",
+    });
+  });
+
+  describe("PUT /v1/user/:id", () => {
+    const createToken = () => jwt.sign({ sub: "test-user" }, process.env.JWT_SECRET);
+
+    test.each([
+      ["missing", undefined],
+      ["invalid", "Bearer invalid-token"],
+    ])("returns 401 for a %s token", async (_case, authorization) => {
+      const findByPkSpy = jest.spyOn(User, "findByPk");
+      const headers = { "Content-Type": "application/json" };
+      if (authorization) headers.Authorization = authorization;
+
+      const response = await fetch(`${baseUrl}/v1/user/1`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({
+          firstname: "Ada",
+          surname: "Lovelace",
+          email: "ada@example.com",
+        }),
+      });
+
+      expect(response.status).toBe(401);
+      expect(findByPkSpy).not.toHaveBeenCalled();
+    });
+
+    test("updates an existing user and returns 204 without a body", async () => {
+      const update = jest.fn().mockResolvedValue(undefined);
+      jest.spyOn(User, "findByPk").mockResolvedValue({ update });
+
+      const response = await fetch(`${baseUrl}/v1/user/1`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${createToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstname: "Ada",
+          surname: "Lovelace",
+          email: "ada@example.com",
+        }),
+      });
+
+      expect(response.status).toBe(204);
+      expect(await response.text()).toBe("");
+      expect(User.findByPk).toHaveBeenCalledWith("1");
+      expect(update).toHaveBeenCalledWith({
+        firstname: "Ada",
+        surname: "Lovelace",
+        email: "ada@example.com",
+      });
+    });
+
+    test("returns 400 when required user data is missing", async () => {
+      const findByPkSpy = jest.spyOn(User, "findByPk");
+
+      const response = await fetch(`${baseUrl}/v1/user/1`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${createToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ firstname: "Ada" }),
+      });
+
+      expect(response.status).toBe(400);
+      expect(findByPkSpy).not.toHaveBeenCalled();
+    });
+
+    test("returns 404 when the user does not exist", async () => {
+      jest.spyOn(User, "findByPk").mockResolvedValue(null);
+
+      const response = await fetch(`${baseUrl}/v1/user/999`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${createToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstname: "Ada",
+          surname: "Lovelace",
+          email: "ada@example.com",
+        }),
+      });
+
+      expect(response.status).toBe(404);
     });
   });
 
