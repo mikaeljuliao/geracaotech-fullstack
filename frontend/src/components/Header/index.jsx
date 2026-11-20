@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Logo from '../Logo';
 import './styles.css';
 
@@ -16,9 +16,10 @@ function capitalizeFirst(value) {
     : '';
 }
 
-export default function Header() {
+export default function Header({ defaultSearchTerm = '' }) {
   const [searchParams] = useSearchParams();
-  const searchTerm = searchParams.get('filter') || '';
+  const { pathname } = useLocation();
+  const searchTerm = searchParams.get('filter') || defaultSearchTerm;
   const [filter, setFilter] = useState(() => capitalizeFirst(searchTerm));
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -126,7 +127,11 @@ export default function Header() {
             key={item.to}
             to={item.to}
             end={item.to === '/'}
-            className={({ isActive }) => (isActive ? 'header__nav-link active' : 'header__nav-link')}
+            className={({ isActive }) => (
+              isActive || (item.to === '/produtos' && pathname.startsWith('/product/'))
+                ? 'header__nav-link active'
+                : 'header__nav-link'
+            )}
             onClick={() => setMenuOpen(false)}
           >
             {item.label}

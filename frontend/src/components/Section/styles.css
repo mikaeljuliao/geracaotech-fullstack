@@ -25,6 +25,10 @@
   font-weight: 700;
 }
 
+.section__title-text--mobile {
+  display: none;
+}
+
 .section__link {
   position: absolute;
   right: 0;

@@ -6,9 +6,10 @@ export default function ProductOptions({
   radius = '4px',
   shape = 'square',
   type = 'text',
+  defaultOption,
   onChange,
 }) {
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+  const [selectedOption, setSelectedOption] = useState(defaultOption ?? options[0]);
   const optionShape = shape === 'circle' ? 'circle' : 'square';
   const optionType = type === 'color' ? 'color' : 'text';
 

@@ -26,10 +26,17 @@
   border-color: transparent;
 }
 
-.product-options__option--selected {
-  border: 2px solid var(--primary);
+.product-options--square .product-options__option--selected {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--white);
+}
+
+.product-options--circle .product-options__option--selected {
+  border: 2px solid var(--white);
+  box-shadow: 0 0 0 2px var(--error);
 }
 
 .product-options__option:not(.product-options__option--color) {
-  font-size: 24px;
+  font-size: 16px;
 }

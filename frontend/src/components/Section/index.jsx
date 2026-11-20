@@ -3,6 +3,7 @@ import './styles.css';
 
 export default function Section({
   title,
+  mobileTitle,
   titleAlign = 'left',
   link,
   children,
@@ -14,7 +15,12 @@ export default function Section({
     <section className="section">
       {title && (
         <div className={`section__heading section__heading--${alignment}`}>
-          <h2 className="section__title">{title}</h2>
+          <h2 className="section__title">
+            <span className="section__title-text--desktop">{title}</span>
+            {mobileTitle && (
+              <span className="section__title-text--mobile">{mobileTitle}</span>
+            )}
+          </h2>
           {link && (
             isInternalLink ? (
               <Link className="section__link" to={link.href}>

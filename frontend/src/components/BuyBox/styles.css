@@ -4,13 +4,16 @@
 }
 
 .buy-box__name {
-  margin: 0 0 8px;
+  margin: 0 0 19px;
   color: var(--dark-gray);
   font-size: 32px;
-  line-height: 1.2;
+  line-height: 1.08;
 }
 
 .buy-box__reference {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
   margin: 0 0 16px;
   color: var(--dark-gray-3);
   font-size: 12px;
@@ -19,36 +22,41 @@
 .buy-box__rating {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 30px;
 }
 
 .buy-box__stars {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 1px;
+}
+
+.buy-box__stars svg {
+  width: 14px;
+  height: 14px;
+  fill: var(--warning);
+}
+
+.buy-box__rating-score {
   padding: 4px 8px;
   border-radius: 4px;
   background: var(--warning);
   color: var(--white);
-  font-size: 14px;
-}
-
-.buy-box__stars img {
-  width: 14px;
-  height: 14px;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .buy-box__rating-count {
   color: var(--light-gray);
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .buy-box__prices {
   display: flex;
   align-items: baseline;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .buy-box__price {
@@ -59,27 +67,34 @@
 
 .buy-box__price--original {
   color: var(--light-gray-2);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   text-decoration: line-through;
 }
 
-.buy-box__description {
-  margin: 0 0 24px;
-  color: var(--dark-gray-2);
+.buy-box__description-title {
+  margin: 0 0 12px;
+  color: var(--dark-gray-3);
   font-size: 14px;
-  line-height: 1.6;
+  font-weight: 700;
+}
+
+.buy-box__description {
+  margin: 0 0 42px;
+  color: var(--dark-gray-2);
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .buy-box__options {
   display: grid;
-  gap: 20px;
+  gap: 10px;
 }
 
 .buy-box__button {
-  width: 100%;
+  width: 220px;
   min-height: 48px;
-  margin-top: 28px;
+  margin-top: 39px;
   border: 0;
   border-radius: 4px;
   background: var(--warning);
@@ -87,4 +102,54 @@
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
+}
+
+@media (max-width: 650px) {
+  .buy-box__name {
+    margin-bottom: 18px;
+    font-size: 20px;
+    line-height: 1.25;
+  }
+
+  .buy-box__reference {
+    margin-bottom: 12px;
+  }
+
+  .buy-box__rating {
+    margin-bottom: 16px;
+  }
+
+  .buy-box__prices {
+    margin-bottom: 16px;
+  }
+
+  .buy-box__description-title {
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+
+  .buy-box__description {
+    margin-bottom: 28px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .buy-box__options {
+    gap: 20px;
+  }
+
+  .buy-box__price {
+    font-size: 24px;
+  }
+
+  .buy-box__price--original {
+    font-size: 12px;
+  }
+
+  .buy-box__button {
+    width: 100%;
+    min-height: 38px;
+    margin-top: 39px;
+    font-size: 14px;
+  }
 }
