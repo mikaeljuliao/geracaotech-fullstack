@@ -16,6 +16,9 @@ export default function Gallery({
   height,
   radius = '0px',
   showThumbs = false,
+  showArrows = true,
+  showIndicators = false,
+  renderSlide,
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -46,32 +49,54 @@ export default function Gallery({
         >
           {images.map((image, index) => (
             <div className="gallery__slide" key={`${image.src}-${index}`}>
-              <img src={image.src} alt={image.alt || `Imagem ${index + 1}`} />
+              {renderSlide ? (
+                renderSlide(image, index)
+              ) : (
+                <img src={image.src} alt={image.alt || `Imagem ${index + 1}`} />
+              )}
             </div>
           ))}
         </div>
-        <button
-          className="gallery__arrow gallery__arrow--previous"
-          type="button"
-          onClick={goToPrevious}
-          disabled={activeIndex === 0}
-          aria-label="Imagem anterior"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m15 18-6-6 6-6" />
-          </svg>
-        </button>
-        <button
-          className="gallery__arrow gallery__arrow--next"
-          type="button"
-          onClick={goToNext}
-          disabled={activeIndex === images.length - 1}
-          aria-label="Proxima imagem"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m9 18 6-6-6-6" />
-          </svg>
-        </button>
+        {showArrows && (
+          <>
+            <button
+              className="gallery__arrow gallery__arrow--previous"
+              type="button"
+              onClick={goToPrevious}
+              disabled={activeIndex === 0}
+              aria-label="Imagem anterior"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+            </button>
+            <button
+              className="gallery__arrow gallery__arrow--next"
+              type="button"
+              onClick={goToNext}
+              disabled={activeIndex === images.length - 1}
+              aria-label="Proxima imagem"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
+          </>
+        )}
+        {showIndicators && (
+          <div className="gallery__indicators" aria-label="Selecionar slide">
+            {images.map((image, index) => (
+              <button
+                className={`gallery__indicator${index === activeIndex ? ' gallery__indicator--active' : ''}`}
+                key={`${image.src}-indicator-${index}`}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                aria-label={`Exibir slide ${index + 1}`}
+                aria-pressed={index === activeIndex}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {showThumbs && (

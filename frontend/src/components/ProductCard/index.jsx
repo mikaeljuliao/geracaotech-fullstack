@@ -1,14 +1,17 @@
 import './styles.css';
 
-const currency = new Intl.NumberFormat('pt-BR', {
+const currency = new Intl.NumberFormat('en-US', {
   style: 'currency',
-  currency: 'BRL',
+  currency: 'USD',
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 0,
 });
 
 export default function ProductCard({
   image,
   imagem,
   name,
+  category,
   price,
   priceDiscount,
 }) {
@@ -16,8 +19,14 @@ export default function ProductCard({
 
   return (
     <article className="product-card">
-      <img className="product-card__image" src={imageSource} alt={name} />
+      <div className="product-card__media">
+        {priceDiscount !== undefined && (
+          <span className="product-card__discount">30% OFF</span>
+        )}
+        <img className="product-card__image" src={imageSource} alt={name} />
+      </div>
       <div className="product-card__details">
+        {category && <p className="product-card__category">{category}</p>}
         <h3 className="product-card__name">{name}</h3>
         <div className="product-card__prices">
           {priceDiscount !== undefined ? (
