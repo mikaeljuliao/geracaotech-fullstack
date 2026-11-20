@@ -228,3 +228,92 @@ describe("GET /v1/category/:id", () => {
     expect(response.status).toBe(404);
   });
 });
+
+describe("PUT /v1/category/:id", () => {
+  const createToken = () =>
+    jwt.sign({ sub: "test-user" }, process.env.JWT_SECRET);
+
+  test.each([
+    ["missing", undefined],
+    ["invalid", "Bearer invalid-token"],
+  ])("returns 401 for a %s token", async (_case, authorization) => {
+    const findSpy = jest.spyOn(Category, "findByPk");
+    const headers = { "Content-Type": "application/json" };
+    if (authorization) headers.Authorization = authorization;
+
+    const response = await fetch(`${baseUrl}/v1/category/1`, {
+      method: "PUT",
+      headers,
+      body: JSON.stringify({
+        name: "Shoes",
+        slug: "shoes",
+        use_in_menu: true,
+      }),
+    });
+
+    expect(response.status).toBe(401);
+    expect(findSpy).not.toHaveBeenCalled();
+  });
+
+  test("updates an existing category and returns 204 without a body", async () => {
+    const update = jest.fn().mockResolvedValue(undefined);
+    jest.spyOn(Category, "findByPk").mockResolvedValue({ update });
+
+    const response = await fetch(`${baseUrl}/v1/category/1`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${createToken()}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: "Shoes",
+        slug: "shoes",
+        use_in_menu: true,
+      }),
+    });
+
+    expect(response.status).toBe(204);
+    expect(await response.text()).toBe("");
+    expect(Category.findByPk).toHaveBeenCalledWith("1");
+    expect(update).toHaveBeenCalledWith({
+      name: "Shoes",
+      slug: "shoes",
+      use_in_menu: true,
+    });
+  });
+
+  test("returns 400 when category data is invalid", async () => {
+    const findSpy = jest.spyOn(Category, "findByPk");
+
+    const response = await fetch(`${baseUrl}/v1/category/1`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${createToken()}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: "Shoes", slug: "shoes", use_in_menu: "true" }),
+    });
+
+    expect(response.status).toBe(400);
+    expect(findSpy).not.toHaveBeenCalled();
+  });
+
+  test("returns 404 when the category does not exist", async () => {
+    jest.spyOn(Category, "findByPk").mockResolvedValue(null);
+
+    const response = await fetch(`${baseUrl}/v1/category/999`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${createToken()}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: "Shoes",
+        slug: "shoes",
+        use_in_menu: true,
+      }),
+    });
+
+    expect(response.status).toBe(404);
+  });
+});
