@@ -50,12 +50,13 @@ export default function Header() {
         <div className="header__actions">
           <Link className="header__register" to="/cadastro">Cadastre-se</Link>
           <Link className="header__login" to="/login">Entrar</Link>
-          <button className="header__cart" type="button" aria-label="Carrinho de compras">
+          <button className="header__cart" type="button" aria-label="Carrinho de compras, 2 itens">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 4h2l2.2 10h9.7l2.1-7H6" />
               <circle cx="9" cy="19" r="1.5" />
               <circle cx="17" cy="19" r="1.5" />
             </svg>
+            <span className="header__cart-count" aria-hidden="true">2</span>
           </button>
         </div>
       </div>
