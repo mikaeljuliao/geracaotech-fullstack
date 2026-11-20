@@ -1,0 +1,726 @@
+.home-page {
+  padding-bottom: 0;
+  background: #f7f7fc;
+}
+
+.home-page__hero {
+  margin: 0 auto;
+  color: var(--dark-gray);
+}
+
+.home-page__hero .gallery__viewport {
+  border-radius: 0;
+  background: #f5f5f5;
+}
+
+.home-page__hero .gallery__viewport::after {
+  position: absolute;
+  top: 76px;
+  right: max(calc((100vw - 1240px) / 2 - 60px), 30px);
+  width: 140px;
+  height: 140px;
+  background-image: radial-gradient(var(--warning) 1.5px, transparent 1.5px);
+  background-size: 15px 15px;
+  content: '';
+  opacity: 0.5;
+}
+
+.home-page__hero-slide {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.home-page__hero-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 530px;
+  padding: 0 24px 24px 0;
+}
+
+.home-page__hero-eyebrow {
+  margin: 0 0 20px;
+  color: var(--warning);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.home-page__hero-copy h1 {
+  margin: 0 0 20px;
+  color: #1f1f1f;
+  font-size: clamp(42px, 4vw, 64px);
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.home-page__hero-copy h1 span {
+  white-space: nowrap;
+}
+
+.home-page__hero-copy .home-page__button {
+  min-width: 220px;
+}
+
+.home-page__hero-description {
+  max-width: 500px;
+  margin: 0 0 40px;
+  color: var(--dark-gray-3);
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.home-page__hero .home-page__hero-image {
+  position: relative;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 500px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  transform: scale(1.35);
+}
+
+.home-page__hero .gallery__indicators {
+  bottom: 52px;
+  gap: 12px;
+}
+
+.home-page__hero .gallery__indicator {
+  width: 12px;
+  height: 12px;
+}
+
+.home-page__body {
+  display: grid;
+  gap: 106px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 56px 0 118px;
+}
+
+.home-page__body > :first-child .section__heading {
+  margin-bottom: 14px;
+}
+
+.home-page__body > :nth-child(3) {
+  margin-top: 25px;
+}
+
+.home-page__body > :nth-child(3) .section__heading {
+  margin-bottom: 23px;
+}
+
+.home-page__collections {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.home-page__collection {
+  position: relative;
+  height: 250px;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #d9e4f3;
+}
+
+.home-page__collection img {
+  position: absolute;
+  right: -9%;
+  bottom: -19%;
+  display: block;
+  width: 68%;
+  height: 138%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.home-page__discount {
+  position: absolute;
+  z-index: 1;
+  top: 32px;
+  left: 30px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  background: #e7ff86;
+  color: var(--dark-gray-2);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.home-page__collection-title {
+  position: absolute;
+  z-index: 1;
+  top: 76px;
+  left: 30px;
+  width: 48%;
+  margin: 0;
+  color: var(--dark-gray);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.home-page__collection-button {
+  position: absolute;
+  z-index: 1;
+  bottom: 36px;
+  left: 30px;
+  display: inline-flex;
+  min-width: 154px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--light-gray-3);
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.home-page__categories {
+  display: flex;
+  justify-content: center;
+  gap: 46px;
+}
+
+.home-page__category {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  color: var(--dark-gray-2);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.home-page__category-icon {
+  display: grid;
+  width: 104px;
+  height: 104px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--light-gray);
+}
+
+.home-page__category:first-child .home-page__category-icon {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  color: var(--primary);
+}
+
+.home-page__category-icon svg {
+  width: 80px;
+  height: 80px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.2;
+}
+
+.home-page .home-page__category-glyph--shirt {
+  width: 64px;
+  height: 64px;
+}
+
+.home-page .home-page__category-glyph--pants {
+  width: 64px;
+  height: 64px;
+}
+
+.home-page .home-page__category-glyph--headphones {
+  width: 64px;
+  height: 72px;
+}
+
+.home-page .home-page__category-glyph--sneaker {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.home-page .product-listing {
+  row-gap: 38px;
+}
+
+.home-page .product-card__details {
+  padding: 20px 0 8px;
+}
+
+.home-page .product-card__category {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.home-page .product-card__name {
+  margin-bottom: 8px;
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.home-page .product-card__price {
+  font-size: 24px;
+}
+
+.home-page .product-card__prices {
+  gap: 10px;
+}
+
+.home-page .product-card__discount {
+  top: 20px;
+  padding: 6px 18px;
+  font-size: 14px;
+}
+
+.home-page .product-card__price--original {
+  font-size: 22px;
+}
+
+.home-page__promotion {
+  background: var(--white);
+}
+
+.home-page__promotion-inner {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  align-items: center;
+  gap: 40px;
+  max-width: 1240px;
+  min-height: 555px;
+  margin: 0 auto;
+  padding: 48px 0;
+}
+
+.home-page__promotion-art {
+  display: grid;
+  width: 560px;
+  height: 440px;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle, #eee6ff 0 58%, transparent 59%);
+}
+
+.home-page__promotion-art img {
+  display: block;
+  width: 102%;
+  height: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  transform: translateX(-5.7%);
+}
+
+.home-page__promotion-copy > p:first-child {
+  margin: 0 0 20px;
+  color: #F6AA1C;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.home-page__promotion-copy h2 {
+  max-width: 600px;
+  margin: 0 0 20px;
+  color: var(--dark-gray-2);
+  font-size: 48px;
+  line-height: 1.12;
+}
+
+.home-page__promotion-description {
+  max-width: 620px;
+  margin: 0 0 28px;
+  color: var(--dark-gray-2);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.home-page__button {
+  display: inline-flex;
+  min-width: 200px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 1300px) {
+  .home-page__body,
+  .home-page__promotion-inner {
+    width: calc(100% - 64px);
+    margin-right: 32px;
+    margin-left: 32px;
+  }
+
+  .home-page__body {
+    min-width: 0;
+  }
+
+  .home-page__body > * {
+    min-width: 0;
+  }
+
+  .home-page__promotion-art {
+    width: 100%;
+  }
+}
+
+@media (max-width: 800px) {
+  .home-page__hero .gallery__viewport {
+    height: 600px !important;
+  }
+
+  .home-page__hero-slide {
+    grid-template-columns: 1fr 0.8fr;
+  }
+
+  .home-page__hero-copy {
+    padding-left: 12px;
+  }
+
+  .home-page__hero-copy h1 {
+    font-size: 42px;
+  }
+
+  .home-page__hero .home-page__hero-image {
+    height: 380px;
+  }
+
+  .home-page__body {
+    gap: 64px;
+  }
+
+  .home-page__body > :nth-child(3) {
+    margin-top: 0;
+  }
+
+  .home-page__body > :nth-child(3) .section__heading {
+    margin-bottom: 20px;
+  }
+
+  .home-page__body > :first-child .section__heading {
+    margin-bottom: 20px;
+  }
+
+  .home-page .product-listing {
+    row-gap: 24px;
+  }
+
+  .home-page__collection img {
+    height: 200px;
+  }
+
+  .home-page__categories {
+    gap: 20px;
+  }
+
+  .home-page__category-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .home-page__category-icon svg {
+    width: 64px;
+    height: 64px;
+  }
+
+  .home-page .home-page__category-glyph--shirt {
+    width: 52px;
+    height: 52px;
+  }
+
+  .home-page .home-page__category-glyph--pants {
+    width: 52px;
+    height: 52px;
+  }
+
+  .home-page .home-page__category-glyph--headphones {
+    width: 52px;
+    height: 60px;
+  }
+
+  .home-page .home-page__category-glyph--sneaker {
+    width: 52px;
+    height: 52px;
+  }
+
+  .home-page__promotion-inner {
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 32px;
+  }
+
+  .home-page__promotion-copy h2 {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 600px) {
+  .home-page__hero .gallery__viewport {
+    height: 670px !important;
+  }
+
+  .home-page__hero .gallery__viewport::after {
+    top: 8px;
+    right: 20px;
+    width: 64px;
+    height: 64px;
+    background-size: 8px 8px;
+    background-image: radial-gradient(var(--warning) 1px, transparent 1px);
+  }
+
+  .home-page__hero-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 20px;
+  }
+
+  .home-page__hero-copy {
+    max-width: none;
+    margin-top: 280px;
+    padding: 0;
+    text-align: center;
+  }
+
+  .home-page__hero-eyebrow {
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
+  .home-page__hero-copy h1 {
+    margin-bottom: 12px;
+    font-size: 34px;
+    line-height: 1.12;
+  }
+
+  .home-page__hero-description {
+    max-width: 300px;
+    margin: 0 auto 18px;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .home-page__hero .home-page__hero-image {
+    position: absolute;
+    top: 24px;
+    right: 8%;
+    width: 84%;
+    height: 240px;
+    opacity: 1;
+    transform: translateX(-20px) scale(1.1);
+  }
+
+  .home-page__hero .home-page__button {
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+  }
+
+  .home-page__hero .gallery__indicators {
+    bottom: 30px;
+    gap: 8px;
+  }
+
+  .home-page__hero .gallery__indicator {
+    width: 10px;
+    height: 10px;
+  }
+
+  .home-page__body {
+    width: calc(100% - 40px);
+    gap: 88px;
+    margin: 0 20px;
+    padding: 48px 0 72px;
+  }
+
+  .home-page__body .section__heading {
+    min-height: 20px;
+    margin-bottom: 12px;
+  }
+
+  .home-page__body .section__title {
+    font-size: 14px;
+  }
+
+  .home-page__body .section__link {
+    font-size: 12px;
+  }
+
+  .home-page__collections {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .home-page__collection {
+    height: 210px;
+  }
+
+  .home-page__discount {
+    top: 18px;
+    left: 20px;
+    padding: 5px 12px;
+    font-size: 12px;
+  }
+
+  .home-page__collection-title {
+    top: 58px;
+    left: 20px;
+    font-size: 22px;
+  }
+
+  .home-page__collection-button {
+    bottom: 18px;
+    left: 20px;
+    min-width: 145px;
+    height: 40px;
+    font-size: 12px;
+  }
+
+  .home-page__categories {
+    justify-content: flex-start;
+    overflow-x: auto;
+    gap: 18px;
+    padding: 10px 0 20px;
+    scrollbar-width: none;
+  }
+
+  .home-page__categories::-webkit-scrollbar {
+    display: none;
+  }
+
+  .home-page__category {
+    flex: 0 0 auto;
+    gap: 8px;
+    font-size: 11px;
+  }
+
+  .home-page__category-icon {
+    width: 72px;
+    height: 72px;
+  }
+
+  .home-page__category-icon svg {
+    width: 52px;
+    height: 52px;
+  }
+
+  .home-page .home-page__category-glyph--shirt {
+    width: 46px;
+    height: 46px;
+  }
+
+  .home-page .home-page__category-glyph--pants {
+    width: 46px;
+    height: 46px;
+  }
+
+  .home-page .home-page__category-glyph--headphones {
+    width: 46px;
+    height: 52px;
+  }
+
+  .home-page .home-page__category-glyph--sneaker {
+    width: 46px;
+    height: 46px;
+  }
+
+  .home-page__collection-title {
+    font-size: 22px;
+  }
+
+  .home-page .product-listing {
+    row-gap: 50px;
+  }
+
+  .home-page .product-card__media {
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  .home-page .product-card__details {
+    padding: 10px 0 4px;
+  }
+
+  .home-page .product-card__category {
+    margin-bottom: 4px;
+    font-size: 11px;
+  }
+
+  .home-page .product-card__name {
+    max-width: 140px;
+    overflow: hidden;
+    margin-bottom: 4px;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .home-page .product-card__price {
+    font-size: 14px;
+  }
+
+  .home-page .product-card__price--original {
+    font-size: 12px;
+  }
+
+  .home-page .product-card__prices {
+    gap: 4px 8px;
+  }
+
+  .home-page__promotion-inner {
+    width: calc(100% - 40px);
+    margin: 0 20px;
+  }
+
+  .home-page__promotion-inner {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 40px 0 54px;
+  }
+
+  .home-page__promotion-art img {
+    transform: none;
+  }
+
+  .home-page__promotion-art {
+    width: 280px;
+    max-width: 100%;
+    height: 280px;
+    margin: 0 auto;
+  }
+
+  .home-page__promotion-copy > p:first-child {
+    margin-bottom: 12px;
+    font-size: 12px;
+  }
+
+  .home-page__promotion-copy h2 {
+    margin-bottom: 12px;
+    font-size: 24px;
+    line-height: 1.2;
+  }
+
+  .home-page__promotion-description {
+    margin-bottom: 18px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .home-page__promotion-copy .home-page__button {
+    min-width: 0;
+    width: 196px;
+    height: 40px;
+    font-size: 12px;
+  }
+}
