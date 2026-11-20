@@ -1,6 +1,8 @@
 process.env.DB_NAME = "test_db";
 process.env.DB_USER = "test_user";
+process.env.JWT_SECRET = "test-secret";
 
+const jwt = require("jsonwebtoken");
 const app = require("../src/app");
 const Category = require("../src/models/category");
 
@@ -125,6 +127,96 @@ describe("GET /v1/category/:id", () => {
     });
     expect(Category.findByPk).toHaveBeenCalledWith("1", {
       attributes: ["id", "name", "slug", "use_in_menu"],
+    });
+  });
+
+  describe("POST /v1/category", () => {
+    const createToken = () =>
+      jwt.sign({ sub: "test-user" }, process.env.JWT_SECRET);
+
+    test.each([
+      ["missing", undefined],
+      ["invalid", "Bearer invalid-token"],
+    ])("returns 401 for a %s token", async (_case, authorization) => {
+      const createSpy = jest.spyOn(Category, "create");
+      const headers = { "Content-Type": "application/json" };
+      if (authorization) headers.Authorization = authorization;
+
+      const response = await fetch(`${baseUrl}/v1/category`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ name: "Shoes", slug: "shoes" }),
+      });
+
+      expect(response.status).toBe(401);
+      expect(createSpy).not.toHaveBeenCalled();
+    });
+
+    test("creates a category and returns 201 without a body", async () => {
+      jest.spyOn(Category, "create").mockResolvedValue(undefined);
+
+      const response = await fetch(`${baseUrl}/v1/category`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${createToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: "Shoes",
+          slug: "shoes",
+          use_in_menu: true,
+        }),
+      });
+
+      expect(response.status).toBe(201);
+      expect(await response.text()).toBe("");
+      expect(Category.create).toHaveBeenCalledWith({
+        name: "Shoes",
+        slug: "shoes",
+        use_in_menu: true,
+      });
+    });
+
+    test("omits use_in_menu when it is not provided", async () => {
+      jest.spyOn(Category, "create").mockResolvedValue(undefined);
+
+      const response = await fetch(`${baseUrl}/v1/category`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${createToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: "Shoes", slug: "shoes" }),
+      });
+
+      expect(response.status).toBe(201);
+      expect(Category.create).toHaveBeenCalledWith({
+        name: "Shoes",
+        slug: "shoes",
+      });
+    });
+
+    test.each([
+      ["missing name", { slug: "shoes" }],
+      ["missing slug", { name: "Shoes" }],
+      [
+        "non-boolean use_in_menu",
+        { name: "Shoes", slug: "shoes", use_in_menu: "true" },
+      ],
+    ])("returns 400 for %s", async (_case, body) => {
+      const createSpy = jest.spyOn(Category, "create");
+
+      const response = await fetch(`${baseUrl}/v1/category`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${createToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      expect(response.status).toBe(400);
+      expect(createSpy).not.toHaveBeenCalled();
     });
   });
 
