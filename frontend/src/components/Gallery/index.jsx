@@ -27,9 +27,9 @@ export default function Gallery({
   const goToNext = () => setActiveIndex((index) => Math.min(images.length - 1, index + 1));
   const galleryStyle = {
     width: dimension(width) || '100%',
-    height: dimension(height),
     '--gallery-radius': radius,
   };
+  const viewportStyle = height ? { height: dimension(height) } : undefined;
 
   return (
     <div
@@ -39,7 +39,7 @@ export default function Gallery({
       aria-label="Galeria de imagens"
       aria-roledescription="carrossel"
     >
-      <div className="gallery__viewport">
+      <div className="gallery__viewport" style={viewportStyle}>
         <div
           className="gallery__track"
           style={{ transform: `translateX(-${activeIndex * 100}%)` }}
