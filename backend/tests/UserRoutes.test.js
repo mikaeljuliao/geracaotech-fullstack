@@ -138,6 +138,53 @@ describe("POST /v1/user", () => {
       });
     });
 
+    describe("DELETE /v1/user/:id", () => {
+      const createToken = () => jwt.sign({ sub: "test-user" }, process.env.JWT_SECRET);
+
+      test.each([
+        ["missing", undefined],
+        ["invalid", "Bearer invalid-token"],
+      ])("returns 401 for a %s token", async (_case, authorization) => {
+        const findByPkSpy = jest.spyOn(User, "findByPk");
+        const headers = {};
+        if (authorization) headers.Authorization = authorization;
+
+        const response = await fetch(`${baseUrl}/v1/user/1`, {
+          method: "DELETE",
+          headers,
+        });
+
+        expect(response.status).toBe(401);
+        expect(findByPkSpy).not.toHaveBeenCalled();
+      });
+
+      test("deletes an existing user and returns 204 without a body", async () => {
+        const destroy = jest.fn().mockResolvedValue(undefined);
+        jest.spyOn(User, "findByPk").mockResolvedValue({ destroy });
+
+        const response = await fetch(`${baseUrl}/v1/user/1`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${createToken()}` },
+        });
+
+        expect(response.status).toBe(204);
+        expect(await response.text()).toBe("");
+        expect(User.findByPk).toHaveBeenCalledWith("1");
+        expect(destroy).toHaveBeenCalledTimes(1);
+      });
+
+      test("returns 404 when the user does not exist", async () => {
+        jest.spyOn(User, "findByPk").mockResolvedValue(null);
+
+        const response = await fetch(`${baseUrl}/v1/user/999`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${createToken()}` },
+        });
+
+        expect(response.status).toBe(404);
+      });
+    });
+
     test("returns 400 when required user data is missing", async () => {
       const findByPkSpy = jest.spyOn(User, "findByPk");
 
