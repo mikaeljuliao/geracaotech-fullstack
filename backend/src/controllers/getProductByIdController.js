@@ -4,6 +4,15 @@ const ProductOption = require("../models/ProductOption");
 const Category = require("../models/category");
 require("../models/ProductCategory");
 
+function formatImagePath(req, path) {
+  if (!path) return "/featured-k-swiss.png";
+  if (/^https?:\/\//.test(path)) return path;
+  if (path.startsWith("media/")) {
+    return `${req.protocol}://${req.get("host")}/${path}`;
+  }
+  return path.startsWith("/") ? path : `/${path}`;
+}
+
 async function getProductByIdController(req, res) {
   const product = await Product.findByPk(req.params.id, {
     include: [
@@ -40,9 +49,7 @@ async function getProductByIdController(req, res) {
     category_ids: data.Categories.map(({ id }) => id),
     images: data.ProductImages.map(({ id, path }) => ({
       id,
-      content: /^https?:\/\//.test(path)
-        ? path
-        : `${req.protocol}://${req.get("host")}/${path}`,
+      content: formatImagePath(req, path),
     })),
     options: data.ProductOptions,
   });

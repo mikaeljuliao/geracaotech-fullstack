@@ -11,6 +11,15 @@ const defaultFields = [
 ];
 const allowedFields = [...defaultFields, "use_in_menu"];
 
+function formatImagePath(req, path) {
+  if (!path) return "/featured-k-swiss.png";
+  if (/^https?:\/\//.test(path)) return path;
+  if (path.startsWith("media/")) {
+    return `${req.protocol}://${req.get("host")}/${path}`;
+  }
+  return path.startsWith("/") ? path : `/${path}`;
+}
+
 async function searchProductsController(req, res) {
   const { query } = req;
   const badRequest = () =>
@@ -152,9 +161,7 @@ async function searchProductsController(req, res) {
     if (fields.includes("images")) {
       item.images = product.ProductImages.map(({ id, path }) => ({
         id,
-        content: /^https?:\/\//.test(path)
-          ? path
-          : `${req.protocol}://${req.get("host")}/${path}`,
+        content: formatImagePath(req, path),
       }));
     }
     if (fields.includes("options")) item.options = product.ProductOptions;
