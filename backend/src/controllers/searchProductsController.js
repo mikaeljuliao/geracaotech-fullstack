@@ -150,7 +150,12 @@ async function searchProductsController(req, res) {
       fieldsWithoutRelations.map((field) => [field, product[field]]),
     );
     if (fields.includes("images")) {
-      item.images = product.ProductImages.map(({ id, path }) => ({ id, content: path }));
+      item.images = product.ProductImages.map(({ id, path }) => ({
+        id,
+        content: /^https?:\/\//.test(path)
+          ? path
+          : `${req.protocol}://${req.get("host")}/${path}`,
+      }));
     }
     if (fields.includes("options")) item.options = product.ProductOptions;
     if (fields.includes("category_ids")) {
