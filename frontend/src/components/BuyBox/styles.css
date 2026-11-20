@@ -34,10 +34,9 @@
   font-size: 14px;
 }
 
-.buy-box__stars svg {
+.buy-box__stars img {
   width: 14px;
   height: 14px;
-  fill: var(--white);
 }
 
 .buy-box__rating-count {

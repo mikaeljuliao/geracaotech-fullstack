@@ -56,7 +56,7 @@ export default function ProductViewPage() {
           <Section
             title="Produtos recomendados"
             titleAlign="left"
-            link={{ text: 'Ver todos', href: '/produtos' }}
+            link={{ text: 'Ver todos', href: '/products' }}
           >
             <ProductListing
               products={products.filter((item) => item.id !== product.id).slice(0, 4)}

@@ -1,3 +1,4 @@
+import starIcon from '../../assets/star-icon.svg';
 import './styles.css';
 
 const currency = new Intl.NumberFormat('pt-BR', {
@@ -23,9 +24,7 @@ export default function BuyBox({
       <div className="buy-box__rating">
         <span className="buy-box__stars">
           {stars}
-          <svg viewBox="0 0 24 24" aria-label="estrelas" role="img">
-            <path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2 2 9.3l6.9-1L12 2Z" />
-          </svg>
+          <img src={starIcon} alt="" aria-hidden="true" />
         </span>
         <span className="buy-box__rating-count">({rating} avaliações)</span>
       </div>

@@ -27,8 +27,7 @@
 }
 
 .product-options__option--selected {
-  outline: 2px solid var(--primary);
-  outline-offset: 1px;
+  border: 2px solid var(--primary);
 }
 
 .product-options__option:not(.product-options__option--color) {
