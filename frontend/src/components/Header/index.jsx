@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, useNavigate, useSearchParams } from 'react-router-dom';
 import Logo from '../Logo';
 import './styles.css';
 
@@ -10,24 +10,54 @@ const navigation = [
   { label: 'Meus Pedidos', to: '/pedidos' },
 ];
 
+function capitalizeFirst(value) {
+  return value
+    ? `${value[0].toLocaleUpperCase('pt-BR')}${value.slice(1)}`
+    : '';
+}
+
 export default function Header() {
-  const [filter, setFilter] = useState('');
+  const [searchParams] = useSearchParams();
+  const searchTerm = searchParams.get('filter') || '';
+  const [filter, setFilter] = useState(() => capitalizeFirst(searchTerm));
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setFilter(capitalizeFirst(searchTerm));
+  }, [searchTerm]);
 
   function searchProducts() {
     const query = filter.trim();
     navigate(query ? `/produtos?filter=${encodeURIComponent(query)}` : '/produtos');
+    setSearchOpen(false);
   }
 
   return (
     <header className="header">
-      <div className="header__main">
+      <div className={`header__main${searchOpen ? ' header__main--search-open' : ''}`}>
+        <button
+          className="header__menu-toggle"
+          type="button"
+          aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+          aria-expanded={menuOpen}
+          onClick={() => {
+            setMenuOpen((isOpen) => !isOpen);
+            setSearchOpen(false);
+          }}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
         <Link className="header__brand" to="/" aria-label="Ir para a pagina inicial">
           <Logo />
         </Link>
 
         <form
-          className="header__search"
+          className={`header__search${searchOpen ? ' header__search--open' : ''}`}
           onSubmit={(event) => {
             event.preventDefault();
             searchProducts();
@@ -47,6 +77,22 @@ export default function Header() {
           </button>
         </form>
 
+        <button
+          className="header__search-open"
+          type="button"
+          aria-label={searchOpen ? 'Fechar pesquisa' : 'Abrir pesquisa'}
+          aria-expanded={searchOpen}
+          onClick={() => {
+            setSearchOpen((isOpen) => !isOpen);
+            setMenuOpen(false);
+          }}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6" />
+            <path d="M16 16l5 5" />
+          </svg>
+        </button>
+
         <div className="header__actions">
           <Link className="header__register" to="/cadastro">Cadastre-se</Link>
           <Link className="header__login" to="/login">Entrar</Link>
@@ -61,17 +107,39 @@ export default function Header() {
         </div>
       </div>
 
-      <nav className="header__nav" aria-label="Navegacao principal">
+      {menuOpen && (
+        <button
+          className="header__mobile-backdrop"
+          type="button"
+          aria-label="Fechar menu"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
+
+      <nav
+        className={`header__nav${menuOpen ? ' header__nav--open' : ''}`}
+        aria-label="Navegacao principal"
+      >
+        <h2 className="header__mobile-title">Páginas</h2>
         {navigation.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
             end={item.to === '/'}
             className={({ isActive }) => (isActive ? 'header__nav-link active' : 'header__nav-link')}
+            onClick={() => setMenuOpen(false)}
           >
             {item.label}
           </NavLink>
         ))}
+        <div className="header__mobile-auth">
+          <Link className="header__mobile-login" to="/login" onClick={() => setMenuOpen(false)}>
+            Entrar
+          </Link>
+          <Link className="header__mobile-register" to="/cadastro" onClick={() => setMenuOpen(false)}>
+            Cadastre-se
+          </Link>
+        </div>
       </nav>
     </header>
   );
