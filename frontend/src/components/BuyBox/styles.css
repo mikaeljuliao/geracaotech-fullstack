@@ -29,27 +29,23 @@
 .buy-box__stars {
   display: inline-flex;
   align-items: center;
-  gap: 1px;
-}
-
-.buy-box__stars svg {
-  width: 14px;
-  height: 14px;
-  fill: var(--warning);
-}
-
-.buy-box__rating-score {
-  padding: 4px 8px;
+  gap: 4px;
+  padding: 4px 10px;
   border-radius: 4px;
   background: var(--warning);
   color: var(--white);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
+}
+
+.buy-box__stars img {
+  width: 14px;
+  height: 14px;
 }
 
 .buy-box__rating-count {
   color: var(--light-gray);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .buy-box__prices {

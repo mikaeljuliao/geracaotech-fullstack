@@ -1,3 +1,4 @@
+import starIcon from '../../assets/star-icon.svg';
 import './styles.css';
 
 const currency = new Intl.NumberFormat('pt-BR', {
@@ -27,16 +28,12 @@ export default function BuyBox({
         REF:{reference}
       </p>
 
-      {stars && rating && (
+      {stars !== undefined && rating !== undefined && (
         <div className="buy-box__rating">
           <span className="buy-box__stars" aria-label={`${stars} estrelas`}>
-            {Array.from({ length: 5 }, (_, index) => (
-              <svg key={index} viewBox="0 0 24 24" aria-hidden="true">
-                <path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2 2 9.3l6.9-1L12 2Z" />
-              </svg>
-            ))}
+            {stars}
+            <img src={starIcon} alt="" aria-hidden="true" />
           </span>
-          <span className="buy-box__rating-score">{stars}</span>
           <span className="buy-box__rating-count">({rating} avaliações)</span>
         </div>
       )}
@@ -60,6 +57,10 @@ export default function BuyBox({
       <p className="buy-box__description">{description}</p>
       {stock !== undefined && <p>Estoque: {stock}</p>}
       <div className="buy-box__options">{children}</div>
+
+      <button className="buy-box__button" type="button">
+        COMPRAR
+      </button>
     </section>
   );
 }
