@@ -5,7 +5,7 @@ import './styles.css';
 
 const navigation = [
   { label: 'Home', to: '/' },
-  { label: 'Produtos', to: '/products' },
+  { label: 'Produtos', to: '/produtos' },
   { label: 'Categorias', to: '/categorias' },
   { label: 'Meus Pedidos', to: '/pedidos' },
 ];
@@ -16,7 +16,7 @@ export default function Header() {
 
   function searchProducts() {
     const query = filter.trim();
-    navigate(query ? `/products?filter=${encodeURIComponent(query)}` : '/products');
+    navigate(query ? `/produtos?filter=${encodeURIComponent(query)}` : '/produtos');
   }
 
   return (

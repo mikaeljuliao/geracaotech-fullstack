@@ -42,11 +42,11 @@ export default function Footer() {
         <Information
           title="Categorias"
           informations={[
-            { text: 'Camisetas', link: '/products?filter=camisetas' },
-            { text: 'Calcas', link: '/products?filter=calcas' },
-            { text: 'Bones', link: '/products?filter=bones' },
-            { text: 'Headphones', link: '/products?filter=headphones' },
-            { text: 'Tenis', link: '/products?filter=tenis' },
+            { text: 'Camisetas', link: '/produtos?filter=camisetas' },
+            { text: 'Calcas', link: '/produtos?filter=calcas' },
+            { text: 'Bones', link: '/produtos?filter=bones' },
+            { text: 'Headphones', link: '/produtos?filter=headphones' },
+            { text: 'Tenis', link: '/produtos?filter=tenis' },
           ]}
         />
       </div>
