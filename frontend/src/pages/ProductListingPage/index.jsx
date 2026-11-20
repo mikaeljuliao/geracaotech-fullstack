@@ -48,6 +48,7 @@ const emptyFilters = {
 
 const sneakerSearchResults = Array.from({ length: 15 }, (_, index) => ({
   id: `sneaker-search-${index + 1}`,
+  productPageId: '1',
   name: 'K-Swiss V8 - Masculino',
   image: '/featured-k-swiss.png',
   price: 200,

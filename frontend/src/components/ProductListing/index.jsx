@@ -7,6 +7,7 @@ export default function ProductListing({ products = [] }) {
       {products.map((product, index) => (
         <ProductCard
           key={product.id || `${product.name}-${index}`}
+          productPageId={product.productPageId || product.id}
           {...product}
         />
       ))}
