@@ -35,7 +35,7 @@ export default function Gallery({
 
   return (
     <div
-      className={`gallery flex max-w-full flex-col gap-4 ${className}`.trim()}
+      className={`gallery flex max-w-full overflow-hidden flex-col gap-4 ${className}`.trim()}
       style={galleryStyle}
       role="region"
       aria-label="Galeria de imagens"
