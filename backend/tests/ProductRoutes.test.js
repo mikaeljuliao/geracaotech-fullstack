@@ -72,25 +72,25 @@ describe("GET /v1/product/search", () => {
     );
   });
 
+  test("allows the local frontend origin through CORS", async () => {
+    const response = await fetch(`${baseUrl}/v1/product/search`, {
+      method: "OPTIONS",
+      headers: {
+        Origin: "http://localhost:5173",
+        "Access-Control-Request-Method": "GET",
+      },
+    });
+
+    expect(response.status).toBe(204);
+    expect(response.headers.get("access-control-allow-origin")).toBe(
+      "http://localhost:5173",
+    );
+  });
+
   test("supports fields and limit=-1 without pagination", async () => {
     jest.spyOn(Product, "findAndCountAll").mockResolvedValue({
       count: 0,
       rows: [],
-    });
-
-    test("allows the local frontend origin through CORS", async () => {
-      const response = await fetch(`${baseUrl}/v1/product/search`, {
-        method: "OPTIONS",
-        headers: {
-          Origin: "http://localhost:5173",
-          "Access-Control-Request-Method": "GET",
-        },
-      });
-
-      expect(response.status).toBe(204);
-      expect(response.headers.get("access-control-allow-origin")).toBe(
-        "http://localhost:5173",
-      );
     });
 
     const response = await fetch(

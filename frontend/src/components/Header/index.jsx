@@ -6,8 +6,8 @@ import './styles.css';
 const navigation = [
   { label: 'Home', to: '/' },
   { label: 'Produtos', to: '/produtos' },
-  { label: 'Categorias', to: '/categorias' },
-  { label: 'Meus Pedidos', to: '/pedidos' },
+  { label: 'Categorias', to: '/produtos' },
+  { label: 'Meus Pedidos', to: '/produtos' },
 ];
 
 function capitalizeFirst(value) {
@@ -31,7 +31,7 @@ export default function Header({ defaultSearchTerm = '' }) {
 
   function searchProducts() {
     const query = filter.trim();
-    navigate(query ? `/produtos?filter=${encodeURIComponent(query)}` : '/produtos');
+    navigate(query ? `/products?filter=${encodeURIComponent(query)}` : '/products');
     setSearchOpen(false);
   }
 
@@ -97,14 +97,14 @@ export default function Header({ defaultSearchTerm = '' }) {
         <div className="header__actions">
           <Link className="header__register" to="/cadastro">Cadastre-se</Link>
           <Link className="header__login" to="/login">Entrar</Link>
-          <button className="header__cart" type="button" aria-label="Carrinho de compras, 2 itens">
+          <div className="header__cart" aria-label="Carrinho de compras">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 4h2l2.2 10h9.7l2.1-7H6" />
               <circle cx="9" cy="19" r="1.5" />
               <circle cx="17" cy="19" r="1.5" />
             </svg>
             <span className="header__cart-count" aria-hidden="true">2</span>
-          </button>
+          </div>
         </div>
       </div>
 
@@ -124,7 +124,7 @@ export default function Header({ defaultSearchTerm = '' }) {
         <h2 className="header__mobile-title">Páginas</h2>
         {navigation.map((item) => (
           <NavLink
-            key={item.to}
+            key={item.label}
             to={item.to}
             end={item.to === '/'}
             className={({ isActive }) => (

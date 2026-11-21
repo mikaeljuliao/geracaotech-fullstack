@@ -130,7 +130,13 @@ export default function ProductViewPage() {
                     className="product-view-page__slide"
                     style={{ backgroundColor: image.background }}
                   >
-                    <img src={image.src} alt={image.alt} />
+                    <img
+                      src={image.src}
+                      alt={image.alt}
+                      onError={(e) => {
+                        e.currentTarget.src = '/White-Sneakers-PNG-Clipart 1.png';
+                      }}
+                    />
                   </div>
                 )}
               />
@@ -138,6 +144,8 @@ export default function ProductViewPage() {
                 name={product.name}
                 category={categoryName}
                 reference={String(product.id).padStart(8, '0')}
+                stars={4.7}
+                rating={90}
                 stock={product.stock}
                 price={Number(product.price)}
                 priceDiscount={

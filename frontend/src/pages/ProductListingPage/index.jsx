@@ -8,6 +8,25 @@ import './styles.css';
 
 const productFields = 'id,enabled,name,price,price_with_discount,category_ids,images';
 
+const brandOptions = [
+  { text: 'Adiddas', value: 'adiddas' },
+  { text: 'Calenciaga', value: 'calenciaga' },
+  { text: 'K-Swiss', value: 'k-swiss' },
+  { text: 'Nike', value: 'nike' },
+  { text: 'Puma', value: 'puma' },
+];
+
+const genderOptions = [
+  { text: 'Masculino', value: 'masculino' },
+  { text: 'Feminino', value: 'feminino' },
+  { text: 'Unisex', value: 'unisex' },
+];
+
+const conditionOptions = [
+  { text: 'Novo', value: 'novo' },
+  { text: 'Usado', value: 'usado' },
+];
+
 export default function ProductListingPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchTerm = (searchParams.get('filter') || '').trim();
@@ -16,6 +35,9 @@ export default function ProductListingPage() {
   const [products, setProducts] = useState([]);
   const [sortOrder, setSortOrder] = useState('relevance');
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
+  const [selectedBrands, setSelectedBrands] = useState(['adiddas', 'k-swiss']);
+  const [selectedGenders, setSelectedGenders] = useState(['masculino', 'feminino']);
+  const [selectedCondition, setSelectedCondition] = useState('novo');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -85,6 +107,27 @@ export default function ProductListingPage() {
     setSearchParams(nextParams);
   }
 
+  function updateBrand(brandValue, checked) {
+    setSelectedBrands((current) =>
+      checked ? [...current, brandValue] : current.filter((item) => item !== brandValue)
+    );
+  }
+
+  function updateGender(genderValue, checked) {
+    setSelectedGenders((current) =>
+      checked ? [...current, genderValue] : current.filter((item) => item !== genderValue)
+    );
+  }
+
+  const categoryOptions = categories.length > 0
+    ? categories.map(({ id, name }) => ({ text: name, value: String(id) }))
+    : [
+        { text: 'Esporte e lazer', value: 'esporte' },
+        { text: 'Casual', value: 'casual' },
+        { text: 'Utilitário', value: 'utilitario' },
+        { text: 'Corrida', value: 'corrida' },
+      ];
+
   const resultTitle = searchTerm
     ? `Resultados para "${searchTerm}"`
     : 'Todos os produtos';
@@ -152,15 +195,41 @@ export default function ProductListingPage() {
                     </svg>
                   </button>
                 </div>
+
+                <FilterGroup
+                  title="Marka"
+                  name="brand"
+                  inputType="checkbox"
+                  options={brandOptions}
+                  selectedValues={selectedBrands}
+                  onChange={updateBrand}
+                />
+
                 <FilterGroup
                   title="Categoria"
                   name="category"
-                  options={categories.map(({ id, name }) => ({
-                    text: name,
-                    value: String(id),
-                  }))}
+                  inputType="checkbox"
+                  options={categoryOptions}
                   selectedValues={categoryIds ? categoryIds.split(',') : []}
                   onChange={updateCategory}
+                />
+
+                <FilterGroup
+                  title="Gênero"
+                  name="gender"
+                  inputType="checkbox"
+                  options={genderOptions}
+                  selectedValues={selectedGenders}
+                  onChange={updateGender}
+                />
+
+                <FilterGroup
+                  title="Estado"
+                  name="condition"
+                  inputType="radio"
+                  options={conditionOptions}
+                  selectedValue={selectedCondition}
+                  onChange={(val) => setSelectedCondition(val)}
                 />
               </div>
             </aside>

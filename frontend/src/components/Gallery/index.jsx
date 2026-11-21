@@ -52,7 +52,13 @@ export default function Gallery({
               {renderSlide ? (
                 renderSlide(image, index)
               ) : (
-                <img src={image.src} alt={image.alt || `Imagem ${index + 1}`} />
+                <img
+                  src={image.src}
+                  alt={image.alt || `Imagem ${index + 1}`}
+                  onError={(e) => {
+                    e.currentTarget.src = '/featured-k-swiss.png';
+                  }}
+                />
               )}
             </div>
           ))}
@@ -110,7 +116,13 @@ export default function Gallery({
               aria-label={`Exibir imagem ${index + 1}`}
               aria-pressed={index === activeIndex}
             >
-              <img src={image.src} alt="" />
+              <img
+                src={image.src}
+                alt=""
+                onError={(e) => {
+                  e.currentTarget.src = '/featured-k-swiss.png';
+                }}
+              />
             </button>
           ))}
         </div>

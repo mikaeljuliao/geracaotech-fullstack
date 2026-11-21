@@ -27,16 +27,17 @@
 }
 
 .product-options--square .product-options__option--selected {
-  border-color: var(--primary);
+  border: 2px solid var(--primary);
   background: var(--primary);
   color: var(--white);
 }
 
 .product-options--circle .product-options__option--selected {
-  border: 2px solid var(--white);
-  box-shadow: 0 0 0 2px var(--error);
+  border: 2px solid var(--primary);
+  box-shadow: 0 0 0 2px var(--white) inset;
 }
 
 .product-options__option:not(.product-options__option--color) {
-  font-size: 16px;
+  font-size: 24px;
+  font-weight: 700;
 }

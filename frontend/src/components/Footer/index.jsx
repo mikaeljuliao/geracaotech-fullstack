@@ -77,7 +77,7 @@ export default function Footer() {
       </div>
 
       <hr className="footer__divider" />
-      <p className="footer__copyright">© 2022 Digital College</p>
+      <p className="footer__copyright">© 2024 Digital Store</p>
     </footer>
   );
 }
