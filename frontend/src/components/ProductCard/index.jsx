@@ -50,19 +50,19 @@ export default function ProductCard({
         </div>
         <div className="pt-4 pb-2">
           {category && <p className="m-0 mb-1 text-light-gray text-[12px] font-bold">{category}</p>}
-          <h3 className="m-0 mb-1.5 text-dark-gray-2 text-[18px] font-normal leading-tight">{name}</h3>
+          <h3 className="m-0 mb-1.5 text-dark-gray-2 text-[18px] max-[520px]:text-[16px] font-normal leading-tight line-clamp-1">{name}</h3>
           <div className="flex items-baseline gap-2 flex-wrap max-[520px]:gap-x-2 max-[520px]:gap-y-1">
             {priceDiscount !== undefined ? (
               <>
-                <span className="text-light-gray text-[18px] font-normal line-through">
+                <span className="text-light-gray text-[18px] max-[520px]:text-[14px] font-normal line-through">
                   {currency.format(price)}
                 </span>
-                <span className="text-dark-gray text-[20px] max-[520px]:text-[18px] font-bold whitespace-nowrap">
+                <span className="text-dark-gray text-[20px] max-[520px]:text-[16px] font-bold whitespace-nowrap">
                   {currency.format(priceDiscount)}
                 </span>
               </>
             ) : (
-              <span className="text-dark-gray text-[20px] max-[520px]:text-[18px] font-bold whitespace-nowrap">
+              <span className="text-dark-gray text-[20px] max-[520px]:text-[16px] font-bold whitespace-nowrap">
                 {currency.format(price)}
               </span>
             )}
