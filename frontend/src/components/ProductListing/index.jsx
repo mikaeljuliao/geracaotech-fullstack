@@ -1,9 +1,8 @@
 import ProductCard from '../ProductCard';
-import './styles.css';
 
 export default function ProductListing({ products = [] }) {
   return (
-    <div className="product-listing">
+    <div className="product-listing grid grid-cols-2 sm:grid-cols-4 gap-4">
       {products.map((product, index) => (
         <ProductCard
           key={product.id || `${product.name}-${index}`}

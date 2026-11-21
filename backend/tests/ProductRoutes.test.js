@@ -59,7 +59,7 @@ describe("GET /v1/product/search", () => {
           id: 1,
           name: "Sneaker",
           category_ids: [4],
-          images: [{ id: 2, content: "media/products/sneaker.png" }],
+          images: [{ id: 2, content: `${baseUrl}/media/products/sneaker.png` }],
           options: product.ProductOptions,
         },
       ],
@@ -69,6 +69,21 @@ describe("GET /v1/product/search", () => {
     });
     expect(Product.findAndCountAll).toHaveBeenCalledWith(
       expect.objectContaining({ limit: 12, offset: 0 }),
+    );
+  });
+
+  test("allows the local frontend origin through CORS", async () => {
+    const response = await fetch(`${baseUrl}/v1/product/search`, {
+      method: "OPTIONS",
+      headers: {
+        Origin: "http://localhost:5173",
+        "Access-Control-Request-Method": "GET",
+      },
+    });
+
+    expect(response.status).toBe(204);
+    expect(response.headers.get("access-control-allow-origin")).toBe(
+      "http://localhost:5173",
     );
   });
 
