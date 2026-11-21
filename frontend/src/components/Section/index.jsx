@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import './styles.css';
 
 export default function Section({
   title,
@@ -8,26 +7,35 @@ export default function Section({
   link,
   children,
 }) {
-  const alignment = titleAlign === 'center' ? 'center' : 'left';
   const isInternalLink = link?.href?.startsWith('/') === true;
 
   return (
-    <section className="section">
+    <section className="w-full">
       {title && (
-        <div className={`section__heading section__heading--${alignment}`}>
-          <h2 className="section__title">
-            <span className="section__title-text--desktop">{title}</span>
+        <div
+          className={`relative flex items-center min-h-[32px] mb-5 max-[520px]:items-start max-[520px]:gap-3 ${
+            titleAlign === 'center' ? 'justify-center max-[520px]:justify-start' : 'justify-start'
+          }`}
+        >
+          <h2 className="m-0 text-dark-gray-2 text-[24px] font-bold">
+            <span className={mobileTitle ? 'hidden sm:inline' : ''}>{title}</span>
             {mobileTitle && (
-              <span className="section__title-text--mobile">{mobileTitle}</span>
+              <span className="sm:hidden">{mobileTitle}</span>
             )}
           </h2>
           {link && (
             isInternalLink ? (
-              <Link className="section__link" to={link.href}>
+              <Link
+                className="absolute right-0 text-primary text-[18px] no-underline hover:underline max-[520px]:static max-[520px]:ml-auto"
+                to={link.href}
+              >
                 {link.text}
               </Link>
             ) : (
-              <a className="section__link" href={link.href}>
+              <a
+                className="absolute right-0 text-primary text-[18px] no-underline hover:underline max-[520px]:static max-[520px]:ml-auto"
+                href={link.href}
+              >
                 {link.text}
               </a>
             )

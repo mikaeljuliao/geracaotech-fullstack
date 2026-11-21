@@ -1,12 +1,11 @@
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-import './styles.css';
 
 export default function Layout({ children, defaultSearchTerm }) {
   return (
-    <div className="layout">
+    <div className="layout min-h-screen flex flex-col bg-[#f7f7fc]">
       <Header defaultSearchTerm={defaultSearchTerm} />
-      <main className="layout__content">{children}</main>
+      <main className="layout__content flex-1">{children}</main>
       <Footer />
     </div>
   );

@@ -14,7 +14,7 @@ if (!fs.existsSync(mediaDir)) {
 }
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: true }));
 app.use("/media", express.static(mediaDir));
 app.use("/v1/user", userRoutes);
 app.use("/v1/category", categoryRoutes);
