@@ -10,7 +10,7 @@ export default function Section({
   const isInternalLink = link?.href?.startsWith('/') === true;
 
   return (
-    <section className="w-full">
+    <section className="w-full min-w-0 max-w-full">
       {title && (
         <div
           className={`relative flex items-center min-h-[32px] mb-5 max-[520px]:items-start max-[520px]:gap-3 ${

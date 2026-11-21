@@ -35,8 +35,8 @@ export default function Header({ defaultSearchTerm = '' }) {
   }
 
   return (
-    <header className="header bg-white pt-5 pb-5 px-5 md:pt-[34px] md:pb-8 md:px-8 border-b border-light-gray-3 md:border-b-0">
-      <div className="max-w-[1240px] mx-auto">
+    <header className="header bg-white pt-5 pb-5 px-5 md:pt-[34px] md:pb-8 md:px-8 border-b border-light-gray-3 md:border-b-0 w-full max-w-full min-w-0">
+      <div className="max-w-[1240px] w-full min-w-0 mx-auto">
         <div
           className={`header__main grid items-center max-[600px]:grid-cols-[24px_minmax(0,1fr)_24px_24px] max-[600px]:grid-rows-[32px_auto] max-[600px]:gap-x-3 min-[601px]:max-[900px]:grid-cols-[1fr_auto] min-[601px]:max-[900px]:gap-4 min-[901px]:max-[1200px]:grid-cols-[253px_minmax(260px,1fr)_auto] min-[1201px]:grid-cols-[253px_minmax(0,1fr)_348px] gap-8 ${
             searchOpen ? 'max-[600px]:gap-y-4' : 'max-[600px]:gap-y-0'
