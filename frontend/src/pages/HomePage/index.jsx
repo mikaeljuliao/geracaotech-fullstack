@@ -208,13 +208,13 @@ export default function HomePage() {
         />
 
         {/* Body */}
-        <div className="home-page__body grid gap-[106px] max-[800px]:gap-16 max-[600px]:gap-[88px] w-full max-w-[1240px] mx-auto px-5 md:px-8 py-14 max-[600px]:py-12 pb-[118px] max-[600px]:pb-[72px]">
+        <div className="home-page__body grid gap-[106px] max-[800px]:gap-16 max-[600px]:gap-[88px] w-full max-w-[1240px] min-w-0 mx-auto px-5 md:px-8 py-14 max-[600px]:py-12 pb-[118px] max-[600px]:pb-[72px]">
           {/* Collections grid */}
           <Section title="Coleções em destaque" titleAlign="left">
-            <div className="grid grid-cols-3 max-[600px]:grid-cols-1 gap-3 max-[600px]:gap-2.5">
+            <div className="grid grid-cols-3 max-[600px]:grid-cols-1 gap-3 max-[600px]:gap-2.5 w-full min-w-0">
               {collections.map(({ title, titleLines, src }) => (
                 <article
-                  className="relative h-[250px] max-[600px]:h-[210px] min-w-0 overflow-hidden rounded-lg bg-[#d9e4f3]"
+                  className="relative h-[250px] max-[600px]:h-[210px] w-full min-w-0 overflow-hidden rounded-lg bg-[#d9e4f3]"
                   key={src}
                 >
                   <span className="absolute z-10 top-8 max-[600px]:top-[18px] left-[30px] max-[600px]:left-5 py-2 px-[18px] max-[600px]:py-[5px] max-[600px]:px-3 rounded-[20px] bg-[#e7ff86] text-dark-gray-2 text-sm max-[600px]:text-xs font-bold">
@@ -244,36 +244,38 @@ export default function HomePage() {
             </div>
           </Section>
 
-          {/* Category icons */}
+          {/* Category icons com scroll horizontal dedicado no mobile (não expande a largura da página) */}
           <Section title="Coleções em destaque" titleAlign="center">
-            <div className="flex justify-center max-[600px]:justify-start gap-[46px] max-[800px]:gap-5 max-[600px]:gap-[18px] max-[600px]:overflow-x-auto max-[600px]:py-2.5 max-[600px]:pb-5 [scrollbar-width:none] max-[600px]:[&::-webkit-scrollbar]:hidden">
-              {featuredCollectionCategories.map((item, index) => {
-                const apiCategory = categories.find((cat) =>
-                  cat.name.toLowerCase().includes(item.search.slice(0, 4))
-                );
-                const targetUrl = apiCategory
-                  ? `/produtos?category_ids=${apiCategory.id}`
-                  : `/produtos?filter=${encodeURIComponent(item.search)}`;
+            <div className="w-full max-w-full min-w-0 overflow-x-auto pb-4 pt-1 max-[600px]:px-1 overscroll-x-contain [scrollbar-width:thin]">
+              <div className="flex justify-center max-[600px]:justify-start gap-[46px] max-[800px]:gap-5 max-[600px]:gap-[18px] w-max min-w-full px-1">
+                {featuredCollectionCategories.map((item, index) => {
+                  const apiCategory = categories.find((cat) =>
+                    cat.name.toLowerCase().includes(item.search.slice(0, 4))
+                  );
+                  const targetUrl = apiCategory
+                    ? `/produtos?category_ids=${apiCategory.id}`
+                    : `/produtos?filter=${encodeURIComponent(item.search)}`;
 
-                return (
-                  <Link
-                    className={`flex flex-col max-[600px]:shrink-0 items-center gap-4 max-[800px]:gap-3 max-[600px]:gap-2 text-dark-gray-2 text-sm max-[800px]:text-sm max-[600px]:text-[11px] font-semibold no-underline hover:text-primary transition-colors`}
-                    key={item.name}
-                    to={targetUrl}
-                  >
-                    <span
-                      className={`flex items-center justify-center w-[104px] h-[104px] max-[800px]:w-20 max-[800px]:h-20 max-[600px]:w-[72px] max-[600px]:h-[72px] rounded-full bg-white ${
-                        index === 0
-                          ? 'shadow-[0_8px_24px_rgba(0,0,0,0.08)] text-primary'
-                          : 'text-light-gray'
-                      }`}
+                  return (
+                    <Link
+                      className="flex flex-col shrink-0 items-center gap-4 max-[800px]:gap-3 max-[600px]:gap-2 text-dark-gray-2 text-sm max-[800px]:text-sm max-[600px]:text-[11px] font-semibold no-underline hover:text-primary transition-colors"
+                      key={item.name}
+                      to={targetUrl}
                     >
-                      <CategoryIcon type={item.iconType} />
-                    </span>
-                    <span>{item.name}</span>
-                  </Link>
-                );
-              })}
+                      <span
+                        className={`flex items-center justify-center w-[104px] h-[104px] max-[800px]:w-20 max-[800px]:h-20 max-[600px]:w-[72px] max-[600px]:h-[72px] rounded-full bg-white ${
+                          index === 0
+                            ? 'shadow-[0_8px_24px_rgba(0,0,0,0.08)] text-primary'
+                            : 'text-light-gray'
+                        }`}
+                      >
+                        <CategoryIcon type={item.iconType} />
+                      </span>
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           </Section>
 
