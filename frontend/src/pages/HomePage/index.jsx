@@ -57,6 +57,13 @@ function CategoryIcon({ type }) {
         <path d="M8 9h8M8 13h5" />
       </>
     ),
+    cap: (
+      <>
+        <path d="M3 15c1-3.5 4.5-6 9-6s8 2.5 9 6H3Z" />
+        <path d="M12 9V6" />
+        <path d="M2 15c5 1.2 13 1.2 18 0l2 2H2l0-2Z" />
+      </>
+    ),
     headphones: (
       <>
         <path d="M3 14v-3a9 9 0 0 1 18 0v3M5 13v-2a7 7 0 0 1 14 0v2" />
@@ -148,6 +155,14 @@ export default function HomePage() {
     return 'category';
   }
 
+  const featuredCollectionCategories = [
+    { name: 'Camisetas', iconType: 'shirt', search: 'camisetas' },
+    { name: 'Calças', iconType: 'pants', search: 'calças' },
+    { name: 'Bonés', iconType: 'cap', search: 'bonés' },
+    { name: 'Headphones', iconType: 'headphones', search: 'headphones' },
+    { name: 'Tênis', iconType: 'sneaker', search: 'tênis' },
+  ];
+
   return (
     <Layout>
       <div className="home-page">
@@ -162,7 +177,7 @@ export default function HomePage() {
         />
 
         <div className="home-page__body">
-          <Section title="Coleções em destaque" titleAlign="center">
+          <Section title="Coleções em destaque" titleAlign="left">
             <div className="home-page__collections">
               {collections.map(({ title, titleLines, src }) => (
                 <article className="home-page__collection" key={src}>
@@ -181,23 +196,29 @@ export default function HomePage() {
             </div>
           </Section>
 
-          <Section title="Categorias" titleAlign="center">
+          <Section title="Coleções em destaque" titleAlign="center">
             <div className="home-page__categories">
-              {categories.map((category) => (
-                <Link
-                  className="home-page__category"
-                  key={category.id}
-                  to={`/produtos?category_ids=${category.id}`}
-                >
-                  <span className="home-page__category-icon">
-                    <CategoryIcon type={getIcon(category)} />
-                  </span>
-                  <span>{category.name}</span>
-                </Link>
-              ))}
-              {categoriesError && (
-                <p role="alert">{categoriesError}</p>
-              )}
+              {featuredCollectionCategories.map((item, index) => {
+                const apiCategory = categories.find((cat) =>
+                  cat.name.toLowerCase().includes(item.search.slice(0, 4))
+                );
+                const targetUrl = apiCategory
+                  ? `/produtos?category_ids=${apiCategory.id}`
+                  : `/produtos?filter=${encodeURIComponent(item.search)}`;
+
+                return (
+                  <Link
+                    className="home-page__category"
+                    key={item.name}
+                    to={targetUrl}
+                  >
+                    <span className="home-page__category-icon">
+                      <CategoryIcon type={item.iconType} />
+                    </span>
+                    <span>{item.name}</span>
+                  </Link>
+                );
+              })}
             </div>
           </Section>
 
