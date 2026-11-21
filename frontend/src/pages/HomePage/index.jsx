@@ -86,7 +86,7 @@ function CategoryIcon({ type }) {
 
 function renderHeroSlide(image) {
   return (
-    <div className="home-hero-slide relative grid w-full h-full grid-cols-2 max-[600px]:flex max-[600px]:flex-col max-[600px]:items-stretch max-[600px]:px-5 items-center max-w-[1240px] mx-auto max-[800px]:grid-cols-[1fr_0.8fr]">
+    <div className="home-hero-slide relative overflow-hidden grid w-full h-full grid-cols-2 max-[600px]:flex max-[600px]:flex-col max-[600px]:items-stretch max-[600px]:px-5 items-center max-w-[1240px] mx-auto max-[800px]:grid-cols-[1fr_0.8fr]">
       {/* Decorative dot pattern from Figma */}
       <div
         className="absolute top-6 right-4 md:top-14 md:right-0 w-20 h-20 md:w-36 md:h-36 opacity-60 pointer-events-none z-0"
@@ -168,7 +168,14 @@ export default function HomePage() {
   const featuredProducts = apiProducts
     .filter((product) => product.enabled)
     .slice(0, 8)
-    .map((product) => toProductCard(product, categories));
+    .map((product, index) => {
+      const card = toProductCard(product, categories);
+      return {
+        ...card,
+        // No Figma oficial ("Produtos em alta"), apenas os 2 primeiros cards têm o badge com 30% OFF. Os demais 6 cards não possuem badge.
+        discount: index < 2 ? 30 : null,
+      };
+    });
 
   function getIcon(category) {
     const name = category.name.toLocaleLowerCase('pt-BR');
@@ -188,7 +195,7 @@ export default function HomePage() {
 
   return (
     <Layout>
-      <div className="home-page pb-0 bg-[#f7f7fc]">
+      <div className="home-page pb-0 bg-[#f7f7fc] overflow-x-hidden w-full max-w-full">
         {/* Hero Gallery */}
         <Gallery
           className="home-page__hero [&_.gallery\_\_viewport]:rounded-none [&_.gallery\_\_viewport]:bg-[#f5f5f5] [&_.gallery\_\_indicators]:bottom-14 max-[600px]:[&_.gallery\_\_indicators]:bottom-7 [&_.gallery\_\_indicators]:gap-3 max-[600px]:[&_.gallery\_\_indicators]:gap-2"
@@ -201,7 +208,7 @@ export default function HomePage() {
         />
 
         {/* Body */}
-        <div className="home-page__body grid gap-[106px] max-[800px]:gap-16 max-[600px]:gap-[88px] max-w-[1240px] max-[1300px]:w-[calc(100%-64px)] max-[600px]:w-[calc(100%-40px)] mx-auto max-[1300px]:mx-8 max-[600px]:mx-5 py-14 max-[600px]:py-12 pb-[118px] max-[600px]:pb-[72px]">
+        <div className="home-page__body grid gap-[106px] max-[800px]:gap-16 max-[600px]:gap-[88px] w-full max-w-[1240px] mx-auto px-5 md:px-8 py-14 max-[600px]:py-12 pb-[118px] max-[600px]:pb-[72px]">
           {/* Collections grid */}
           <Section title="Coleções em destaque" titleAlign="left">
             <div className="grid grid-cols-3 max-[600px]:grid-cols-1 gap-3 max-[600px]:gap-2.5">
@@ -288,11 +295,11 @@ export default function HomePage() {
         </div>
 
         {/* Air Jordan Promotion */}
-        <section className="bg-white">
-          <div className="grid grid-cols-[1fr_1.2fr] max-[800px]:grid-cols-[0.8fr_1.2fr] max-[600px]:grid-cols-1 items-center gap-10 max-[800px]:gap-8 max-[600px]:gap-4 max-w-[1240px] max-[1300px]:w-[calc(100%-64px)] max-[600px]:w-[calc(100%-40px)] min-h-[555px] mx-auto max-[1300px]:mx-8 max-[600px]:mx-5 py-12 max-[600px]:py-10 max-[600px]:pb-[54px]">
-            <div className="grid place-items-center w-[560px] max-[1300px]:w-full max-[600px]:w-[280px] max-[600px]:max-w-full max-[600px]:mx-auto h-[440px] max-[600px]:h-[280px] rounded-full bg-[radial-gradient(circle,#eee6ff_0_58%,transparent_59%)]">
+        <section className="bg-white w-full overflow-hidden">
+          <div className="grid grid-cols-[1fr_1.2fr] max-[800px]:grid-cols-[0.8fr_1.2fr] max-[600px]:grid-cols-1 items-center gap-10 max-[800px]:gap-8 max-[600px]:gap-4 w-full max-w-[1240px] min-h-[555px] mx-auto px-5 md:px-8 py-12 max-[600px]:py-10 max-[600px]:pb-[54px]">
+            <div className="grid place-items-center w-[560px] max-[1300px]:w-full max-[600px]:w-[280px] max-[600px]:max-w-full max-[600px]:mx-auto h-[440px] max-[600px]:h-[280px] rounded-full bg-[radial-gradient(circle,#eee6ff_0_58%,transparent_59%)] overflow-hidden">
               <img
-                className="block w-[102%] h-auto object-contain mix-blend-multiply max-[600px]:[transform:none] [transform:translateX(-5.7%)]"
+                className="block w-full max-[600px]:w-full h-auto object-contain mix-blend-multiply [transform:translateX(-4%)] max-[600px]:[transform:none]"
                 src="/special-offer-air-jordan.png"
                 alt="Tênis Air Jordan em preto, branco e amarelo"
               />

@@ -14,12 +14,17 @@ export default function ProductCard({
   category,
   price,
   priceDiscount,
+  discount,
   productPageId,
 }) {
   const imageSource = image || imagem;
-  const discountPercentage = price > 0 && priceDiscount !== undefined
-    ? Math.round((1 - priceDiscount / price) * 100)
-    : 0;
+  const showDiscountBadge = discount !== undefined
+    ? (discount !== null && discount > 0)
+    : (price > 0 && priceDiscount !== undefined);
+
+  const discountPercentage = discount !== undefined && discount !== null
+    ? discount
+    : (price > 0 && priceDiscount !== undefined ? Math.round((1 - priceDiscount / price) * 100) : 0);
 
   return (
     <Link
@@ -29,7 +34,7 @@ export default function ProductCard({
     >
       <article className="min-w-0">
         <div className="relative h-[321px] max-[520px]:h-auto max-[520px]:aspect-[292/321] bg-white rounded-[4px] shadow-[0_2px_8px_rgba(0,0,0,0.06)] overflow-hidden">
-          {priceDiscount !== undefined && (
+          {showDiscountBadge && (
             <span className="absolute top-[18px] left-[20px] z-10 py-[6px] px-[12px] rounded-[20px] bg-[#e7ff86] text-dark-gray-2 text-[12px] font-bold">
               {discountPercentage}% OFF
             </span>
